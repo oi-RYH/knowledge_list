@@ -1,43 +1,43 @@
-# 작업 과정 지식 체크리스트
+# Work Process Knowledge Checklist
 
-이 파일은 **실제 작업 과정을 설명하거나 재현할 수 있는가**를 기록한다. 개념 자체의 이해도는 `TECH_KNOWLEDGE.md`에서 별도로 추적한다. 실제로 등장한 과정만 추가한다.
+This file tracks whether the user can explain or reproduce an actual work process. Track understanding of concepts themselves separately in `TECH_KNOWLEDGE.md`. Add only processes that have actually come up.
 
-| 상태 | 의미 |
+| Status | Meaning |
 |---|---|
-| ✅ Known / 이해함 | 작업 순서와 선택 이유를 다른 사람에게 설명할 수 있다고 사용자가 확인함 |
-| 🟡 Familiar / 익숙함 | 해 본 적은 있지만 설명에는 복습이 필요하다고 사용자가 확인함 |
-| ⬜ Not Learned / 미학습 | 아직 모른다고 사용자가 명시적으로 확인함 |
-| ❓ Unreviewed / 미확인 | 등장했지만 이해 수준을 확인하지 않음 |
+| ✅ Known | The user has confirmed they can explain the sequence of steps and reasons for choices to someone else. |
+| 🟡 Familiar | The user has confirmed they have done it but need a review to explain it. |
+| ⬜ Not Learned | The user has explicitly confirmed they do not know it yet. |
+| ❓ Unreviewed | The process has come up, but the user's understanding has not been checked. |
 
-목록에 없음은 미학습이 아니다. `등록일`은 최초 추가일로 유지한다. `최종 확인일`은 사용자 확인이나 상태 변경 시에만 `YYYY-MM-DD`로 기록하며, 확인 전에는 `—`로 둔다. 아래 초기 항목은 대화에서 언급된 Luckfox·C 빌드 사례에 한정한다. 예시 상태를 실제 사용자 수준으로 간주하지 않았다.
+An absent item does not mean Not Learned. Keep `Date Added` as the date the item was first added. Record `Last Confirmed` in `YYYY-MM-DD` only when the user confirms their understanding or the status changes; use `—` until then. The initial items below are limited to the Luckfox and C build examples discussed in conversation. Example statuses were not treated as the user's actual level.
 
 ## Build / Compilation
 
-| 작업 과정 | 상태 | 등록일 | 최종 확인일 | 비고 |
+| Work Process | Status | Date Added | Last Confirmed | Notes |
 |---|---|---|---|---|
-| C 소스 → 실행 파일 컴파일 기본 흐름 | ❓ | 2026-10-02 | — | C 파일에서 실행 파일을 만드는 사례에서 등장 |
-| gcc 직접 컴파일 | ❓ | 2026-10-02 | — | 일반 C 빌드 절차의 예로 등장; 실제 수행 여부 미확인 |
-| 다른 CPU Architecture용 Cross Compile | ❓ | 2026-10-02 | — | Luckfox용 실행 파일 생성 사례에서 등장 |
-| Vendor Toolchain 이용 빌드 | ❓ | 2026-10-02 | — | 공급업체 툴체인을 찾고 사용하는 사례에서 등장 |
+| Basic flow from C source to executable | ❓ | 2026-10-02 | — | Mentioned in the example of producing an executable from a C file. |
+| Compiling directly with gcc | ❓ | 2026-10-02 | — | Mentioned as an example of a general C build process; actual execution not confirmed. |
+| Cross compiling for another CPU architecture | ❓ | 2026-10-02 | — | Mentioned in the example of producing an executable for Luckfox. |
+| Building with a vendor toolchain | ❓ | 2026-10-02 | — | Mentioned in the example of finding and using a vendor toolchain. |
 
 ## Deployment
 
-| 작업 과정 | 상태 | 등록일 | 최종 확인일 | 비고 |
+| Work Process | Status | Date Added | Last Confirmed | Notes |
 |---|---|---|---|---|
-| Embedded Board에 실행 파일 배포 | ❓ | 2026-10-02 | — | Luckfox 보드 배포 준비 사례에서 등장; 실제 수행 여부 미확인 |
+| Deploying an executable to an embedded board | ❓ | 2026-10-02 | — | Mentioned in the example of preparing a Luckfox board deployment; actual execution not confirmed. |
 
 ## Environment Setup
 
-현재 등록 항목 없음.
+No items recorded yet.
 
 ## AI / Model Evaluation
 
-현재 등록 항목 없음.
+No items recorded yet.
 
 ## Networking
 
-현재 등록 항목 없음.
+No items recorded yet.
 
 ## Experiment
 
-현재 등록 항목 없음.
+No items recorded yet.

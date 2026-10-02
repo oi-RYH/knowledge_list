@@ -1,62 +1,62 @@
-# AI 작업 기록 양식
+# AI Work Log Template
 
-중요한 프로젝트에서는 이 양식을 프로젝트 내부의 `AI_WORK_LOG.md`로 복사하고, 실제 수행한 작업별로 아래 블록을 추가한다. 예정한 일과 실제 수행한 일을 구분하고, 실행하지 않은 명령은 적지 않는다.
+For a significant project, copy this template to `AI_WORK_LOG.md` inside the project and add a block for each piece of work actually performed. Distinguish planned work from completed work. Do not list commands that were not run.
 
-## 날짜 / 작업 제목
+## Date / Work Title
 
-- 날짜 (YYYY-MM-DD):
-- 작업 제목:
+- Date (YYYY-MM-DD):
+- Work title:
 
-### 목적
+### Purpose
 
-- 
+-
 
-### 사용자의 요청
+### User Request
 
-- 
+-
 
-### AI가 실제로 수행한 작업
+### Work AI Actually Performed
 
-1. 
-2. 
+1.
+2.
 
-### 사용한 기술 / 도구
+### Technologies / Tools Used
 
-| 기술·도구 | 사용 이유 | 적용 위치 |
+| Technology or Tool | Reason for Use | Where Applied |
 |---|---|---|
-|  |  |  |
+| | | |
 
-### 사용한 명령
+### Commands Run
 
 ```text
-실제로 실행한 명령을 순서대로 기록
+Record commands actually run, in order.
 ```
 
-### 주요 설정 / 옵션
+### Important Settings / Options
 
-| 설정·옵션 | 값 | 선택 이유·영향 |
+| Setting or Option | Value | Reason and Effect |
 |---|---|---|
-|  |  |  |
+| | | |
 
-### 생성 또는 수정된 파일
+### Files Created or Changed
 
-| 파일 경로 | 생성·수정 | 내용 |
+| File Path | Created or Changed | Description |
 |---|---|---|
-|  |  |  |
+| | | |
 
-### AI가 대신 내린 기술적 판단
+### Technical Decisions AI Made on the User's Behalf
 
-| 판단 | 근거 | 사용자 지시 여부 |
+| Decision | Rationale | Directed by User? |
 |---|---|---|
-|  |  |  |
+| | | |
 
-### 사용자 지식 확인이 필요한 항목
+### Items Requiring a User Knowledge Check
 
-| 항목 | 질문 또는 설명할 내용 | 확인 결과 |
+| Item | Question or Explanation Needed | Check Result |
 |---|---|---|
-|  |  | 미확인 |
+| | | Unreviewed |
 
-### 관련 체크리스트 항목
+### Related Checklist Items
 
 - `TECH_KNOWLEDGE.md`:
 - `WORKFLOW_KNOWLEDGE.md`:

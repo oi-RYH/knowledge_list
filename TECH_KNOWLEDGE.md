@@ -1,52 +1,52 @@
-# 기술·개념 지식 체크리스트
+# Technology and Concept Knowledge Checklist
 
-이 파일은 **개념 자체를 아는가**를 기록한다. 작업 절차를 설명할 수 있는지는 `WORKFLOW_KNOWLEDGE.md`에서 별도로 추적한다. 실제로 등장한 항목만 추가한다.
+This file tracks whether the user understands a concept itself. Track the ability to explain a work process separately in `WORKFLOW_KNOWLEDGE.md`. Add only items that have actually come up.
 
-| 상태 | 의미 |
+| Status | Meaning |
 |---|---|
-| ✅ Known / 이해함 | 핵심 개념·이유·역할을 다른 사람에게 설명할 수 있다고 사용자가 확인함 |
-| 🟡 Familiar / 익숙함 | 사용 경험은 있지만 설명에는 복습이 필요하다고 사용자가 확인함 |
-| ⬜ Not Learned / 미학습 | 아직 모른다고 사용자가 명시적으로 확인함 |
-| ❓ Unreviewed / 미확인 | 등장했지만 이해 수준을 확인하지 않음 |
+| ✅ Known | The user has confirmed they can explain the core concept, purpose, and role to someone else. |
+| 🟡 Familiar | The user has confirmed they have used it but need a review to explain it. |
+| ⬜ Not Learned | The user has explicitly confirmed they do not know it yet. |
+| ❓ Unreviewed | The item has come up, but the user's understanding has not been checked. |
 
-목록에 없음은 미학습이 아니다. `등록일`은 최초 추가일로 유지한다. `최종 확인일`은 사용자 확인이나 상태 변경 시에만 `YYYY-MM-DD`로 기록하며, 확인 전에는 `—`로 둔다. 아래 초기 항목은 대화에서 언급된 Luckfox·C 빌드 사례에 한정한다. 예시로 언급된 지식 수준을 사용자의 실제 수준으로 간주하지 않았다.
+An absent item does not mean Not Learned. Keep `Date Added` as the date the item was first added. Record `Last Confirmed` in `YYYY-MM-DD` only when the user confirms their understanding or the status changes; use `—` until then. The initial items below are limited to the Luckfox and C build examples discussed in conversation. Example statements about knowledge levels were not treated as the user's actual level.
 
 ## Programming Languages
 
-| 항목 | 상태 | 등록일 | 최종 확인일 | 비고 |
+| Item | Status | Date Added | Last Confirmed | Notes |
 |---|---|---|---|---|
-| C 언어 | ❓ | 2026-10-02 | — | Luckfox용 C 코드 작업 사례에서 등장; 이해 수준 미확인 |
+| C | ❓ | 2026-10-02 | — | Mentioned in the example of preparing C code for Luckfox; understanding not checked. |
 
 ## Build / Compilation
 
-| 항목 | 상태 | 등록일 | 최종 확인일 | 비고 |
+| Item | Status | Date Added | Last Confirmed | Notes |
 |---|---|---|---|---|
-| Compiler (컴파일러) | ❓ | 2026-10-02 | — | C 소스와 실행 파일의 관계를 설명할 때 필요 |
-| Toolchain (툴체인) | ❓ | 2026-10-02 | — | Luckfox용 빌드 도구 탐색 사례에서 등장 |
-| Cross Compilation (크로스 컴파일) | ❓ | 2026-10-02 | — | 다른 CPU용 실행 파일 생성 사례에서 등장 |
+| Compiler | ❓ | 2026-10-02 | — | Needed to explain the relationship between C source code and an executable. |
+| Toolchain | ❓ | 2026-10-02 | — | Mentioned in the example of finding build tools for Luckfox. |
+| Cross Compilation | ❓ | 2026-10-02 | — | Mentioned in the example of producing an executable for another CPU. |
 
 ## Embedded Systems
 
-| 항목 | 상태 | 등록일 | 최종 확인일 | 비고 |
+| Item | Status | Date Added | Last Confirmed | Notes |
 |---|---|---|---|---|
-| ARM Architecture (ARM 아키텍처) | ❓ | 2026-10-02 | — | Luckfox 대상 CPU 아키텍처 확인 사례에서 등장 |
+| ARM Architecture | ❓ | 2026-10-02 | — | Mentioned in the example of checking the target CPU architecture for Luckfox. |
 
 ## Networking
 
-현재 등록 항목 없음.
+No items recorded yet.
 
 ## Computer Vision / AI
 
-현재 등록 항목 없음.
+No items recorded yet.
 
 ## Operating Systems
 
-현재 등록 항목 없음.
+No items recorded yet.
 
 ## Development Tools
 
-현재 등록 항목 없음.
+No items recorded yet.
 
 ## Experiment / Evaluation
 
-현재 등록 항목 없음.
+No items recorded yet.
