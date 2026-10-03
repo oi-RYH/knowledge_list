@@ -6,6 +6,18 @@ Apply these rules from the commit that introduces this English-language revision
 
 Keep the user able to explain what an AI-created or AI-modified deliverable uses, why those choices were made, and how the result was produced. Do not treat a working project alone as completion. Surface technologies, processes, tools, and decisions that the user may need to explain when submitting or reporting the work. Prioritize the user's ability to understand and explain the result.
 
+## Safe Pre-task Knowledge Sync
+
+A new substantial task is a new unit of work with its own technical objective or completion condition. Examples include switching projects or repositories; starting a new feature or deliverable; starting a new build, compilation, deployment, experiment, evaluation, or analysis phase; or moving to a different technical objective after the previous one is complete. Small edits, bug fixes, renaming, parameter tweaks, explanations of the current result, and iterative refinement of the same objective are minor follow-ups, not new substantial tasks.
+
+Before starting each new substantial task, attempt to synchronize the dedicated global knowledge repository (for example, `~/knowledge_list`). Keep this sync isolated to that repository. Never run Git operations against the user's active project or repository as part of knowledge synchronization.
+
+Before pulling, verify that the knowledge repository exists and is a Git repository. Check for uncommitted local changes with `git status --porcelain` or an equivalent check. If any exist, do not automatically pull. Never discard, overwrite, stash, reset, rebase, merge, or otherwise mutate user changes to make synchronization succeed. When the repository is clean, use `git pull --ff-only` or equivalent fast-forward-only behavior. If a fast-forward is impossible, do not auto-merge.
+
+Synchronization is best-effort. If it succeeds, re-read the latest `AGENTS.md`, `TECH_KNOWLEDGE.md`, and `WORKFLOW_KNOWLEDGE.md` before performing the task. If it fails because of a network issue, dirty or divergent repository, missing repository, permission issue, or another problem, continue the requested task using the current local or cached knowledge files and briefly tell the user that the knowledge repository could not be updated. Interrupt the primary task only when continuing it would itself be unsafe or impossible.
+
+Once a substantial task has started, use the knowledge and rules loaded at its start as a snapshot for that task. Do not re-sync during that task; attempt synchronization again only at the beginning of the next new substantial task.
+
 ## Global Knowledge Records
 
 - Use `~/.codex/TECH_KNOWLEDGE.md` to track understanding of concepts, technologies, and tools.
