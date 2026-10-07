@@ -28,7 +28,10 @@ An absent item does not mean Not Learned. Keep `Date Added` as the date the item
 
 ## Environment Setup
 
-No items recorded yet.
+| Work Process | Status | Date Added | Last Confirmed | Notes |
+|---|---|---|---|---|
+| Installing the global Codex knowledge repository | ❓ | 2026-10-07 | — | Cloned `knowledge_list` and linked its instruction and checklist files into `~/.codex`. |
+| Synchronizing global Codex knowledge across devices with Git | ❓ | 2026-10-07 | — | The repository is intended to be pulled before substantial tasks and committed and pushed after knowledge-record changes. |
 
 ## AI / Model Evaluation
 

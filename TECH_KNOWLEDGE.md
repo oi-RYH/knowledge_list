@@ -45,7 +45,11 @@ No items recorded yet.
 
 ## Development Tools
 
-No items recorded yet.
+| Item | Status | Date Added | Last Confirmed | Notes |
+|---|---|---|---|---|
+| Git repository | ❓ | 2026-10-07 | — | Used to store and synchronize the global Codex knowledge records across devices. |
+| Symbolic link | ❓ | 2026-10-07 | — | Used to connect files in the cloned repository to the corresponding files under `~/.codex`. |
+| Codex global `AGENTS.md` | ❓ | 2026-10-07 | — | Used to provide instructions that Codex loads globally before project-specific instructions. |
 
 ## Experiment / Evaluation
 
