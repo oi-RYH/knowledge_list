@@ -35,7 +35,9 @@ An absent item does not mean Not Learned. Keep `Date Added` as the date the item
 
 ## AI / Model Evaluation
 
-No items recorded yet.
+| Work Process | Status | Date Added | Last Confirmed | Notes |
+|---|---|---|---|---|
+| Training YOLO on a custom labeled video dataset | ❓ | 2026-10-09 | — | Hwashin: split labeled frames, write a dataset YAML, train YOLOv5n (yolov5/train.py) and YOLOv8n (ultralytics); 1-epoch smoke tests done, full training not run yet. |
 
 ## Networking
 

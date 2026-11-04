@@ -37,7 +37,18 @@ No items recorded yet.
 
 ## Computer Vision / AI
 
-No items recorded yet.
+| Item | Status | Date Added | Last Confirmed | Notes |
+|---|---|---|---|---|
+| YOLOv5n / YOLOv8n | ❓ | 2026-10-09 | — | Hwashin: two small detection models trained on the Hwashin video only, at the professor's request. |
+| Pretrained weights (transfer learning) | ❓ | 2026-10-09 | — | Hwashin: training starts from COCO-pretrained yolov5n.pt / yolov8n.pt; whether this counts as "another dataset" is pending. |
+| YOLO detection head (stride, anchor) | ❓ | 2026-10-29 | — | Hwashin L1/L2: YOLOv5n has 3 outputs (stride 8/16/32, P3-P5) with 3 anchors each; people are ~32x39 px at 416x224 input, so P5 may be unused. |
+| Width multiplier (channel scaling) | ❓ | 2026-10-29 | — | Hwashin L3: shrinking YOLOv5n width 0.25 to 0.18 / 0.125 to make the model lighter. |
+| Knowledge distillation | ❓ | 2026-10-29 | — | Hwashin L5: train a small model to imitate a larger teacher to recover accuracy. |
+| Pruning (structured) | ❓ | 2026-10-29 | — | Hwashin L6: remove low-importance channels and retrain. |
+| INT8 quantization (RKNN) | ❓ | 2026-10-30 | — | Hwashin Q: FP32 model converted to 8-bit integers for the RV1106 NPU; loss appears only on models not trained on Hwashin. |
+| Calibration dataset | ❓ | 2026-10-30 | — | Hwashin Q2: images used during conversion to pick each layer's value range (scale); site / public / mixed, 50-500 images. |
+| Quantization algorithm and granularity (normal / mmse / kl_divergence, per-channel / per-layer) | ❓ | 2026-10-30 | — | Hwashin Q2: rknn-toolkit2 options for choosing the value range and how finely it is applied. |
+| Hybrid (mixed-precision) quantization | ❓ | 2026-10-30 | — | Hwashin Q2: keep high-error layers in FP16 and the rest INT8; layers chosen from accuracy_analysis in Q1. |
 
 ## Operating Systems
 
@@ -53,4 +64,7 @@ No items recorded yet.
 
 ## Experiment / Evaluation
 
-No items recorded yet.
+| Item | Status | Date Added | Last Confirmed | Notes |
+|---|---|---|---|---|
+| Train/validation split (time-based vs random) | ❓ | 2026-10-09 | — | Hwashin: 939 video frames split 80/20 by time (0-750 / 751-938) because a random split leaks near-identical neighbouring frames into training. |
+| CRC-32 checksum | ❓ | 2026-10-23 | — | Hwashin: per-frame CRC-32 of the 416x224 RGB model input, compared between the LuckFox board and the server reproduction (939/939 match) to prove identical inputs. |
