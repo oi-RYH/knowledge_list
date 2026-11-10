@@ -1,0 +1,6 @@
+.DS_Store
+.impeccable/
+.superpowers/
+.claude/
+node_modules/
+museum/data/preview/

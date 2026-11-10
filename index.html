@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>지식의 회랑</title>
+<meta name="description" content="AI와 함께 일하며 모은 지식을 거닐고, 스스로를 시험하는 곳.">
+<meta name="theme-color" content="#f3e8d2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="museum/museum.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="view" aria-hidden="true"></canvas>
+
+<div id="ui">
+  <nav id="rail" aria-label="전시실 이동"></nav>
+  <p id="caption" aria-live="polite"></p>
+  <button id="back" type="button" aria-label="물러서기" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <section id="trial" aria-live="polite" hidden>
+    <h2 id="question"></h2>
+    <div id="choices"></div>
+  </section>
+  <button id="sound" type="button" aria-label="소리" aria-pressed="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 9.5h3.2L12 5.6v12.8l-4.8-3.9H4z"/>
+      <path class="waves" d="M15.5 9a4.2 4.2 0 010 6M18 6.6a7.6 7.6 0 010 10.8"/>
+      <path class="mute" d="M15.5 9.5l5 5M20.5 9.5l-5 5"/>
+    </svg>
+  </button>
+</div>
+
+<div id="light" aria-hidden="true"></div>
+
+<!-- The same content as plain text: read by assistive technology, and shown when WebGL is unavailable. -->
+<main id="plain" class="quiet">
+  <h1>지식의 회랑</h1>
+  <div id="plain-list"></div>
+</main>
+
+<noscript><p class="notice">이 전시는 자바스크립트가 켜져 있어야 열립니다.</p></noscript>
+<script type="module" src="museum/js/main.js"></script>
+</body>
+</html>

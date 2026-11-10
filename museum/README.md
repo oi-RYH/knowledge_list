@@ -1,0 +1,153 @@
+# 지식의 회랑
+
+`TECH_KNOWLEDGE.md`와 `WORKFLOW_KNOWLEDGE.md`에 쌓인 지식을 걸어 다니며 보고, 끝의 방에서 시험을 치르는 3D 웹입니다. 이 폴더와 저장소 루트의 `index.html`이 전부이며, `web` 브랜치에만 있습니다. `main`은 건드리지 않습니다.
+
+## 여는 법
+
+로컬에서 미리 보려면 저장소 루트에서 서버를 띄웁니다. 파일을 직접 더블클릭하면 열리지 않습니다.
+
+```sh
+python3 museum/tools/serve.py
+```
+
+그다음 브라우저에서 `http://localhost:4173`을 엽니다.
+
+GitHub Pages로 띄우려면 저장소 설정의 Pages에서 배포 브랜치를 `web`, 폴더를 `/ (root)`로 지정합니다. 그러면 `https://oi-ryh.github.io/knowledge_list/`에서 열립니다.
+
+## 조작
+
+| 동작 | 결과 |
+|---|---|
+| 스크롤 / 위아래 방향키 | 회랑을 걷습니다 |
+| 마우스 이동 | 고개를 돌립니다 |
+| 석비 클릭 | 다가가고, 천이 벗겨집니다 |
+| Esc / 다시 스크롤 | 물러섭니다 |
+| 오른쪽 점 | 그 분야로 이동합니다 (마름모는 심판의 방) |
+| Page Down / Page Up | 다음 / 이전 분야 |
+| 심판의 방에서 1~4 | 보기를 고릅니다 |
+| 왼쪽 아래 스피커 | 소리를 켜고 끕니다 (기본은 꺼짐) |
+
+터치 화면에서는 위아래로 쓸어 걷고, 좌우로 쓸어 둘러보고, 석비를 눌러 다가갑니다.
+
+## 석비가 말하는 것
+
+글자 대신 재질로 이해 상태를 보여 줍니다.
+
+| 기록의 상태 | 모습 |
+|---|---|
+| ✅ 이해함 | 흰 대리석, 금박을 입힌 글씨 |
+| 🟡 익숙함 | 석회암, 먹을 넣은 글씨 |
+| ⬜ 미학습 | 거친 현무암, 얕게 긁은 글씨 |
+| ❓ 미확인 | 흰 천으로 덮여 있고, 이름이 천 아래로 비칩니다 |
+
+상태는 기록 파일에서만 바뀝니다. 이 사이트는 상태를 바꾸지 않습니다. 퀴즈 결과는 브라우저에만 남습니다.
+
+회랑의 앞쪽 날개는 개념(`TECH_KNOWLEDGE.md`), 중정을 지난 뒤쪽 날개는 작업 과정(`WORKFLOW_KNOWLEDGE.md`)입니다. 기록이 늘면 회랑이 그만큼 길어집니다.
+
+## 내용이 들어오는 길
+
+1. 열릴 때 GitHub의 `main`에서 두 기록 파일을 직접 읽습니다. 실패하면 이 브랜치에 있는 사본을 씁니다.
+2. `museum/data/exhibit.ko.json`에서 한글 이름, 한 줄 설명, 퀴즈를 찾아 붙입니다.
+3. 여기에 항목이 없는 기록은 영어 이름과 영어 메모로 나오고, 퀴즈에서는 빠집니다.
+
+푸시하지 않은 로컬 기록은 보이지 않습니다. GitHub에 올라간 것만 보입니다.
+
+### 새 항목의 한글 설명과 퀴즈 추가
+
+`museum/data/exhibit.ko.json`의 `tech` 또는 `workflow`에, 기록 파일의 항목 이름을 그대로 키로 써서 넣습니다. 백틱은 빼도 됩니다.
+
+```json
+"Cross Compilation": {
+  "ko": "크로스 컴파일",
+  "note": "내 컴퓨터에서, 다른 CPU에서 돌아갈 실행 파일을 만드는 일입니다.",
+  "quiz": [
+    { "q": "묻는 문장.", "o": ["정답", "오답", "오답", "오답"], "a": 0 }
+  ]
+}
+```
+
+`a`는 정답의 위치(0부터)입니다. 화면에서는 보기 순서가 매번 섞입니다. 새 분야가 생기면 `categories`에 한글 이름도 넣습니다.
+
+빠진 것이 있는지 확인합니다.
+
+```sh
+node museum/tools/check-data.mjs
+```
+
+다른 폴더의 기록(예: 아직 푸시하지 않은 로컬 사본)으로 확인하려면 폴더를 넘깁니다.
+
+```sh
+node museum/tools/check-data.mjs ~/Documents/90-99_Shared-Etc/AI/knowledge_list
+```
+
+### 에이전트가 계속 써넣게 하려면
+
+지금은 `main`을 건드리지 않기로 했기 때문에 전시 데이터가 `web` 브랜치에만 있습니다. 에이전트가 새 지식을 등록할 때 퀴즈도 같이 쓰게 하려면 두 가지가 필요합니다.
+
+1. 전시 데이터 파일을 `main`으로 옮기고, `museum/js/config.js`의 `SOURCES.exhibit` 맨 앞에 그 파일의 raw 주소를 넣습니다.
+2. `main`의 `AGENTS.md`에 아래 조항을 추가합니다.
+
+```markdown
+## Museum Entries
+
+When registering a new item in `TECH_KNOWLEDGE.md` or `WORKFLOW_KNOWLEDGE.md`, add a matching entry to the exhibit data file under the same item name: a short Korean name (`ko`), one plain Korean sentence describing it as it appeared in the work (`note`), and one or two multiple-choice questions (`quiz`) with four choices and the index of the correct one. Write questions that test the idea, not the wording of the note. Do not change an item's status because a quiz entry exists.
+```
+
+## 파일
+
+```
+index.html                 페이지 뼈대
+museum/
+  museum.css               화면 위의 글자와 점
+  data/exhibit.ko.json     한글 이름, 설명, 퀴즈
+  assets/veil.bin          미리 시뮬레이션한 천의 모양 (3종)
+  js/
+    main.js                불러오기, 조립, 매 프레임
+    config.js              데이터 주소, 건물 치수, 화질 단계
+    data.js                기록 파일 읽기, 전시 데이터와 합치기
+    layout.js              기록 수에 맞춰 평면 짜기
+    hall.js                회랑, 아케이드, 볼트, 중정
+    sanctum.js             심판의 방
+    being.js               심판의 존재
+    steles.js              석비, 새긴 글씨, 천
+    skysea.js              하늘과 바다
+    textures.js            석고, 돌, 대리석, 린넨 텍스처 생성
+    materials.js           공통 재질
+    gi.js                  반사광 계산
+    mirror.js              젖은 바닥의 반사
+    post.js                빛줄기, 심도, 번짐, 색 보정
+    controls.js            걷기와 둘러보기
+    quiz.js                퀴즈 진행
+    audio.js               소리
+  tools/
+    serve.py               로컬 서버
+    check-data.mjs         전시 데이터 점검
+    bake-veil.mjs          천 시뮬레이션
+```
+
+그림 파일은 하나도 없습니다. 텍스처, 하늘, 바다, 소리는 열릴 때 코드로 만들어지고, 천의 모양만 미리 계산해 둔 파일(`veil.bin`)을 읽습니다.
+
+## 천 다시 굽기
+
+석비 치수를 바꿨을 때만 필요합니다. `steles.js`와 `bake-veil.mjs`의 `SLAB`, `PLINTH`를 같은 값으로 맞춘 뒤 실행합니다. 1분 반쯤 걸립니다.
+
+```sh
+node museum/tools/bake-veil.mjs
+```
+
+## 주소 옵션
+
+| 옵션 | 뜻 |
+|---|---|
+| `?q=ultra`, `high`, `medium`, `low` | 화질을 고정합니다. 없으면 프레임 속도를 보고 스스로 맞춥니다 |
+| `?s=120` | 그만큼 걸어 들어간 자리에서 시작합니다 (미터) |
+| `?records=<주소>` | 다른 곳의 기록 파일로 미리 봅니다 |
+| `?plain` | 3D 없이 글로만 봅니다 |
+| `?off=ao,air,bloom,fxaa,grain,mirror` | 화면 효과를 하나씩 끕니다 (점검용) |
+
+## 알아 둘 것
+
+- WebGL2가 안 되는 브라우저에서는 같은 내용이 글 목록으로 나옵니다.
+- three.js와 글꼴은 CDN에서 받습니다. 오프라인에서는 열리지 않습니다.
+- 화면이 크거나 그래픽 성능이 낮으면 해상도를 먼저 낮추고, 그래도 느리면 효과를 줄입니다.
+- 움직임 줄이기 설정을 켠 기기에서는 걷는 흔들림과 이동 애니메이션을 뺍니다.

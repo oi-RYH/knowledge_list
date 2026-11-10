@@ -1,0 +1,169 @@
+/* The interface is almost nothing: a column of dots, one line of caption, the trial's question.
+   Colours are taken from the hall (sunlit plaster, stone ink) and from the rotunda (gold on black). */
+
+:root {
+  --plaster: #f6ecd8;
+  --ink: #2e241a;
+  --ink-soft: #6b5a47;
+  --gold: #f0cf8e;
+  --night: #0b0a0e;
+  --face: 'Hahmlet', 'Noto Serif KR', 'Apple SD Gothic Neo', serif;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  overflow: hidden;
+  background: var(--plaster);
+  color: var(--ink);
+  font-family: var(--face);
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  word-break: keep-all;            /* Korean breaks between words, not inside them */
+  overflow-wrap: break-word;
+  overscroll-behavior: none;
+}
+::selection { background: rgba(240, 207, 142, .55); color: var(--ink); }
+
+#view { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+
+/* the light the visitor's eyes adjust from while the hall is being prepared */
+#light {
+  position: fixed; inset: 0; pointer-events: none; z-index: 5;
+  background: radial-gradient(120% 90% at 62% 46%, #fffaf0 0%, #f6ecd8 55%, #ecdcc0 100%);
+  transition: opacity 1.6s ease;
+}
+/* how far the hall is from ready: a hairline that fills with the real work done */
+#light::after {
+  content: ''; position: absolute; left: 50%; bottom: 14vh; width: 132px; height: 1px; margin-left: -66px;
+  background: linear-gradient(to right, #9c7a3c calc(var(--load, 0) * 100%), rgba(156, 122, 60, .2) calc(var(--load, 0) * 100%));
+}
+body.ready #light { opacity: 0; }
+
+#ui { position: fixed; inset: 0; pointer-events: none; z-index: 3; }
+#ui > * { pointer-events: auto; }
+
+/* --- wayfinding: one dot per room, a diamond for the rotunda ------------------------------- */
+#rail {
+  position: absolute; right: max(14px, env(safe-area-inset-right)); top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: flex-end;
+  max-height: 86vh; opacity: 0; transition: opacity 1.2s ease;
+}
+body.ready #rail { opacity: 1; }
+#rail button {
+  position: relative; width: 28px; height: 15px; padding: 0; border: 0; background: none; cursor: pointer;
+  color: #fff8e8; -webkit-tap-highlight-color: transparent;
+}
+#rail button::before {
+  content: ''; position: absolute; right: 9px; top: 50%; width: 4px; height: 4px; margin-top: -2px; border-radius: 50%;
+  background: currentColor; opacity: .5; box-shadow: 0 0 0 1px rgba(60, 40, 15, .18), 0 1px 6px rgba(40, 25, 5, .5);
+  transition: transform .5s var(--ease), opacity .3s ease;
+}
+#rail button.gap { height: 26px; pointer-events: none; }
+#rail button.gap::before { width: 1px; height: 12px; margin-top: -6px; right: 10.5px; border-radius: 0; opacity: .35; }
+#rail button.sanctum { height: 30px; }
+#rail button.sanctum::before { width: 6px; height: 6px; margin-top: -3px; right: 8px; border-radius: 0; transform: rotate(45deg); }
+#rail button:hover::before, #rail button:focus-visible::before, #rail button.here::before { opacity: 1; transform: scale(2); }
+#rail button.sanctum:hover::before, #rail button.sanctum:focus-visible::before, #rail button.sanctum.here::before { transform: rotate(45deg) scale(1.7); }
+#rail button span {
+  position: absolute; right: 30px; top: 50%; transform: translate(6px, -50%); white-space: nowrap;
+  font-size: 14px; font-weight: 600; letter-spacing: -.01em; color: #fffaf0; text-shadow: 0 1px 12px rgba(50, 30, 5, .85), 0 0 2px rgba(50, 30, 5, .6);
+  opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .5s var(--ease);
+}
+#rail button:hover span, #rail button:focus-visible span { opacity: 1; transform: translate(0, -50%); }
+#rail button:focus-visible { outline: none; }
+body.dark #rail button { color: var(--gold); }
+
+/* --- the one line said about a stele ------------------------------------------------------ */
+#caption {
+  position: absolute; left: 50%; bottom: max(7vh, env(safe-area-inset-bottom)); transform: translate(-50%, 10px);
+  width: min(34em, calc(100vw - 48px)); margin: 0; text-align: center; text-wrap: balance;
+  font-size: clamp(15px, 1.05vw + 11px, 19px); line-height: 1.75; font-weight: 600; letter-spacing: -.012em; color: #fffaf0;
+  text-shadow: 0 1px 18px rgba(40, 24, 4, .9), 0 0 3px rgba(40, 24, 4, .7);
+  opacity: 0; pointer-events: none; transition: opacity .5s ease, transform .9s var(--ease);
+}
+#caption::before {
+  content: ''; position: absolute; inset: -5vh -12vw -9vh; z-index: -1; pointer-events: none;
+  background: radial-gradient(50% 60% at 50% 55%, rgba(40, 26, 8, .42) 0%, rgba(40, 26, 8, 0) 100%);
+}
+#caption.on { opacity: 1; transform: translate(-50%, 0); transition-delay: .9s; }
+
+#back, #sound {
+  position: absolute; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer;
+  color: #fffaf0; -webkit-tap-highlight-color: transparent; transition: opacity .4s ease, transform .5s var(--ease);
+}
+#back svg, #sound svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 1px 5px rgba(40, 24, 4, .8)); }
+#back { right: max(52px, calc(env(safe-area-inset-right) + 40px)); top: max(18px, env(safe-area-inset-top)); opacity: .85; }
+#back[hidden] { display: block; opacity: 0; pointer-events: none; transform: scale(.8); }
+#sound { left: max(14px, env(safe-area-inset-left)); bottom: max(14px, env(safe-area-inset-bottom)); opacity: 0; }
+body.ready #sound { opacity: .6; }
+#sound:hover, #sound:focus-visible, #back:hover, #back:focus-visible { opacity: 1; transform: scale(1.08); }
+#sound .waves { display: none; }
+#sound[aria-pressed='true'] .waves { display: inline; }
+#sound[aria-pressed='true'] .mute { display: none; }
+#back:focus-visible, #sound:focus-visible, #choices button:focus-visible { outline: 1.5px solid currentColor; outline-offset: 3px; }
+body.dark #back, body.dark #sound { color: var(--gold); }
+
+/* --- the trial ---------------------------------------------------------------------------- */
+#trial {
+  position: absolute; left: 50%; bottom: max(6vh, env(safe-area-inset-bottom)); transform: translateX(-50%);
+  width: min(44rem, calc(100vw - 40px)); text-align: center; color: #f3e6c8;
+  opacity: 0; transition: opacity 1.4s ease;
+}
+#trial::before {
+  content: ''; position: absolute; inset: -22vh -30vw -12vh; z-index: -1; pointer-events: none;
+  background: radial-gradient(60% 62% at 50% 62%, rgba(6, 5, 9, .82) 0%, rgba(6, 5, 9, .5) 48%, rgba(6, 5, 9, 0) 100%);
+}
+#trial[hidden] { display: block; pointer-events: none; }
+#trial.on { opacity: 1; }
+#question {
+  margin: 0 auto; max-width: 30em; min-height: 3.4em; text-wrap: balance;
+  font-size: clamp(17px, 1.2vw + 12px, 25px); line-height: 1.65; font-weight: 600; letter-spacing: -.015em;
+  text-shadow: 0 1px 16px rgba(0, 0, 0, .7);
+  transition: opacity .7s ease, filter .7s ease;
+}
+#trial.turning #question, #trial.turning #choices { opacity: 0; filter: blur(6px); }
+#choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 26px; transition: opacity .7s ease, filter .7s ease; }
+#choices button {
+  min-height: 56px; padding: 13px 18px; border: 1px solid rgba(240, 207, 142, .3); border-radius: 2px;
+  background: rgba(240, 207, 142, .045); color: #efe1c2; cursor: pointer;
+  font: inherit; font-size: clamp(14px, .5vw + 12px, 16.5px); line-height: 1.5; letter-spacing: -.01em; text-wrap: balance;
+  transition: background .35s ease, border-color .35s ease, color .35s ease, opacity .5s ease, transform .5s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+#choices button:hover { background: rgba(240, 207, 142, .13); border-color: rgba(240, 207, 142, .75); }
+#choices button:active { transform: scale(.985); }
+#choices.judged button { cursor: default; pointer-events: none; }
+#choices.judged button.truth { background: rgba(255, 222, 150, .22); border-color: #ffe2a6; color: #fffaf0; }
+#choices.judged button:not(.truth) { opacity: .28; }
+#choices.judged button.chosen:not(.truth) { opacity: .6; border-color: rgba(170, 120, 200, .7); }
+
+/* --- plain version ------------------------------------------------------------------------ */
+.quiet { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+body.plain { overflow: auto; }
+body.plain #view, body.plain #ui, body.plain #light { display: none; }
+body.plain #plain {
+  position: static; width: auto; height: auto; margin: 0 auto; overflow: visible; clip-path: none; white-space: normal;
+  max-width: 40rem; padding: 12vh 24px 16vh;
+}
+#plain h1 { font-size: clamp(34px, 6vw, 56px); line-height: 1.2; letter-spacing: -.03em; margin: 0 0 1.4em; }
+#plain h2 { font-size: 15px; font-weight: 600; color: var(--ink-soft); margin: 3.2em 0 .8em; }
+#plain dl { margin: 0; }
+#plain dt { font-weight: 700; font-size: 19px; letter-spacing: -.015em; margin-top: 1.2em; }
+#plain dd { margin: .2em 0 0; color: var(--ink-soft); max-width: 34em; }
+#plain dt[data-status='unreviewed'] { font-weight: 400; }
+.notice { position: fixed; inset: auto 0 12vh; text-align: center; margin: 0; padding: 0 24px; }
+
+@media (max-width: 640px) {
+  #choices { grid-template-columns: 1fr; gap: 8px; margin-top: 18px; }
+  #choices button { min-height: 48px; padding: 10px 14px; }
+  #rail button { height: 13px; }
+  #rail button span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: .01s !important; animation: none !important; }
+}
