@@ -223,3 +223,181 @@ git commit; git push origin web                                                 
 
 - `TECH_KNOWLEDGE.md`: Development Tools (Git repository; Cross-agent shared instruction repository)
 - `WORKFLOW_KNOWLEDGE.md`: Environment Setup (synchronizing shared AI knowledge across devices with Git)
+
+## 2026-11-11 / The well: a trial of a second composition
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: The well, a second composition of the museum, built as a trial page
+
+### Purpose
+
+- The owner found the hall well made but its composition lacking, and asked whether the site could be composed more creatively. Of three proposals they chose "the well of light". This is that composition as something to walk through, so the choice can be made by trying it.
+
+### User Request
+
+- "구현은 잘 확인했어. 상당히 잘 구현했네. 다만 구성이 아쉬워. 웹의 창의적인 구성 방법이 있을까?"
+- "빛의 우물" (chosen for the walkable trial)
+
+### Work AI Actually Performed
+
+1. Built `well.html`: a round tower in the sea, hollow down the middle, with a ramp winding down the inside of its wall. The records stand along the ramp facing the shaft; the presence hovers in the shaft level with the visitor; the trial is held on the floor at the bottom. The hall (`index.html`) is unchanged.
+2. Ordered the records by date added, newest at the top, with one rail dot per day. `?order=field` gives the hall's order instead.
+3. Wrote the building as curved geometry generated from the record count (20 bays per turn), with arches open to the sea above the water and blind below it.
+4. Wrote a light-probe layout that follows the ramp, so one gallery's light is never mixed with the next turn's.
+5. Wrote the movement: scrolling walks the ramp; any stele in sight can be chosen, and a far one is flown to across the shaft through the gaps between columns.
+6. Made seven shared modules slightly more general (listed below) without changing what the hall does, and checked the hall afterwards.
+7. Checked in the browser: entry, looking across, mid height, below the sea, the trial, a flight, a real click on a stele across the shaft, a phone-sized portrait window, `?order=field`. Ran 2,000 random routes through a checker for the ramp, columns, rail and presence: none touched.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| Hand-built BufferGeometry in cylinder coordinates | Walls and ramp are truly round, and one bay is described once | `museum/js/well/shaft.js` |
+| Ambient-cube probes indexed by ring, bearing and height above the local floor | Indirect light that respects the ramp's slabs | `museum/js/well/gi.js` |
+| Centripetal Catmull-Rom curves through gate points | Flights that cannot pass through a column or the ramp | `museum/js/well/controls.js` |
+| One fixed directional shadow volume | The whole well is in view at once, so the sun's shadows cover all of it | `museum/js/well/main.js` |
+
+### Commands Run
+
+```text
+node --check <each module>
+node <scratch>/well-check.mjs <repo> [records dir]      # layout numbers for 64 and 99 records
+python3 museum/tools/serve.py 4173                      # local preview, left running
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| Bays per turn, fall per turn | 20, 6.4 m | 64 records make 3.2 turns (20.7 m); 99 make 5 turns (31.9 m) |
+| Sun | 20 degrees high, bearing 11.25 bays | The quarter bay lands each arch's light on a stele across the shaft |
+| Turns below the sea | 2 | Below it the arches are blind and the presence is the main light |
+| Order | by date added, newest first | The top of the well is always "now"; `?order=field` restores sections |
+| Light probes | 4 rings x 20 bearings x 2 heights per turn, two passes | 724 of 960 captured for 64 records; `?gi=1` does one pass |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `well.html` | Created | Page for the trial |
+| `museum/js/well/main.js`, `layout.js`, `shaft.js`, `gi.js`, `controls.js` | Created | The well |
+| `museum/js/materials.js` | Changed | `useGI` accepts another probe lookup |
+| `museum/js/gi.js` | Changed | Exports the integration shader, the volume texture helper and `captureEnvironment` |
+| `museum/js/post.js` | Changed | The air can fill a round building |
+| `museum/js/skysea.js` | Changed | The sea can lie all round a circular wall, at a given level |
+| `museum/js/steles.js` | Changed | A slot may carry a height |
+| `museum/js/being.js` | Changed | The presence can be moved and its brightness scaled |
+| `museum/js/controls.js` | Changed | Wheel gain is a property |
+| `museum/README.md`, `PRODUCT.md`, `AI_WORK_LOG.md` | Changed | Describe the trial |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| Reused the real materials, steles and presence instead of a grey-box model | Flat or unfinished renditions were rejected before; a composition is hard to judge without its light | No (a structure-only model had been proposed) |
+| Date order, newest at the top | The proposal said the top is always "now" | Composition chosen by the owner; this ordering not directed |
+| The presence follows the visitor down instead of waiting at the bottom | The proposal said it is present throughout | No |
+| Steles before the piers, columns under the arches | The presence's light and the sun from across both reach every stele | No |
+| Any visible stele can be chosen and flown to | Seeing everything at once only matters if it can be reached | No |
+| A separate `well/main.js` that repeats parts of `main.js` | Keeps the hall untouched until a composition is chosen | No |
+| Not committed or pushed at the time | The owner had not asked; it was published later, together with the adoption | No |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Light probes on a helix | Why the probe height is measured from the sloping floor rather than from the ground | Unreviewed |
+| Catmull-Rom route through gates | Why the flight goes through fixed points instead of bending one curve | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+
+## 2026-11-11 / The well adopted as the site
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: The well replaces the hall as the site
+
+### Purpose
+
+- The owner adopted the well. Make it the site itself instead of a trial page beside the hall, and leave one building and one set of modules to maintain.
+
+### User Request
+
+- "우물로 채택" (in answer to whether the well should become the main composition)
+- "올려줘" (in answer to whether to publish the well at the live address)
+
+### Work AI Actually Performed
+
+1. Made `index.html` load the well and removed `well.html`. The page is now titled "빛의 우물".
+2. Moved the trial's modules out of `museum/js/well/` to `museum/js/` (`main.js`, `layout.js`, `shaft.js`) and removed the hall's building (`hall.js`, `sanctum.js`, its `main.js` and `layout.js`). The hall remains in the branch history up to commit `cbffe19`.
+3. Folded what the trial had added beside the shared modules back into them: one `Walk` class in `controls.js`, one `GI` class in `gi.js`, the well's dimensions in `config.js` as `DIM`, the round sea in `skysea.js`, the round air volume in `post.js`. `materials.js` returned to its earlier form.
+4. Reduced the floor hooks in `mirror.js` to the reflection; the puddles and the basin belonged to the hall's floor.
+5. Two adjustments found while checking: a right answer no longer whites out the pale walls (the presence's body and its light now have separate gains, and the swing of a verdict is smaller), and a stele more than four bays away is flown to instead of walked round to.
+6. Checked again in the browser after the move: entry, across the shaft, below the sea, the trial with a right answer, a real click on a stele across the shaft and Escape, a phone-sized portrait window, `?order=field`, `?plain`. Ran 3,000 random routes through the same checker as before: none touched the ramp, a column, the rail or the presence.
+7. Rewrote `museum/README.md` and `DESIGN.md` for the well and updated `PRODUCT.md`.
+8. On the owner's request, committed the adoption to `web` and pushed it, so GitHub Pages serves the well instead of the hall.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| No new technology | The work was moving and merging what the trial had built | |
+
+### Commands Run
+
+```text
+cp -R museum index.html well.html AI_WORK_LOG.md PRODUCT.md DESIGN.md <scratch>/before-adoption/   # safety copy, outside the repository
+git checkout -- museum/js/materials.js
+rm -rf museum/js/well museum/js/hall.js museum/js/sanctum.js well.html
+node --check <each module>
+python3 museum/tools/serve.py 4173                      # already running; used for the checks
+node museum/tools/check-data.mjs
+git add -A && git commit                               # on web, after the owner asked
+git push origin web
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| Walk-round range | 4.2 bays | Nearer steles on the same stretch of ramp are walked to; farther ones are flown to across the shaft |
+| Verdict swing of the presence's light | x1.75 at most for a right answer (was x2.6) | The walls are pale here; the stronger burst whited them out |
+| `QUALITY.*.shadow` | one number (4096, low 2048) | The sun's shadow map is square now that it covers the whole well |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `index.html` | Changed | Title and plain heading "빛의 우물" |
+| `well.html`, `museum/js/well/` | Removed | The trial became the site |
+| `museum/js/hall.js`, `museum/js/sanctum.js` | Removed | The hall's nave and rotunda |
+| `museum/js/main.js`, `layout.js` | Replaced | Now the well's entry point and layout |
+| `museum/js/shaft.js` | Created | The well's fabric (moved from the trial) |
+| `museum/js/controls.js`, `gi.js` | Rewritten | One class each, for the well |
+| `museum/js/config.js`, `post.js`, `skysea.js`, `mirror.js`, `being.js`, `steles.js` | Changed | The hall's options removed; the well's are the defaults |
+| `museum/js/audio.js`, `quiz.js`, `museum/museum.css` | Changed | Comments, and the trial mark's class |
+| `museum/README.md`, `DESIGN.md`, `PRODUCT.md`, `AI_WORK_LOG.md` | Changed | Describe the well as the site |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| Removed the hall instead of keeping it as a second page | Adopting one composition leaves one to maintain; the hall is recoverable from history | Adoption directed; removal not |
+| Renamed the page to "빛의 우물" | The name the owner chose the composition by | No |
+| Kept date order as the default | It is the order the adopted trial had | No |
+| Softened the verdict's burst of light and shortened the walk-round range | Both looked wrong in the check after the move | No |
+| Committed and pushed to `web` only after the owner asked | Publishing is the owner's call | Yes ("올려줘") |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Removing code that history keeps | How the hall can be brought back from commit `cbffe19` if wanted | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics; Development Tools (Git repository)
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+

@@ -19,7 +19,7 @@ uniform sampler2D tDepth; uniform sampler2D tShadow;
 uniform mat4 uProjInv; uniform mat4 uViewInv; uniform mat4 uShadowMatrix;
 uniform vec3 uCamPos; uniform vec3 uSunDir; uniform vec3 uSunColor; uniform vec3 uAmbient;
 uniform float uTime; uniform float uFrame; uniform float uDensity; uniform float uMaxDist; uniform float uG; uniform float uSunK;
-uniform vec3 uHall;        // half width of the nave, z of the portal, height of the air volume
+uniform vec3 uShaft;       // the air inside the well: radius, floor, top
 uniform highp sampler3D tDust;
 varying vec2 vUv;
 float ign(vec2 p){ return fract(52.9829189 * fract(dot(p, vec2(.06711056, .00583715)))); }
@@ -27,10 +27,9 @@ vec3 worldAt(vec2 uv, float depth){
   vec4 v = uProjInv * vec4(uv * 2. - 1., depth * 2. - 1., 1.);
   return (uViewInv * vec4(v.xyz / v.w, 1.)).xyz;
 }
-// dusty air inside the building, thin haze over the terrace and sea, nothing past the portal
+// dusty air inside the well, thin haze over the sea around it
 float medium(vec3 p){
-  float inside = step(abs(p.x), uHall.x) * step(p.y, uHall.z);
-  float d = mix(.10, 1., inside) * step(uHall.y - 1.5, p.z);
+  float d = mix(.10, 1., step(length(p.xz), uShaft.x) * step(uShaft.y, p.y) * step(p.y, uShaft.z));
   vec3 q = p * vec3(.42, .65, .42) / 32. + vec3(uTime * .0016, -uTime * .001, uTime * .0007);
   return d * (.55 + .9 * texture(tDust, q).r);
 }
@@ -109,8 +108,9 @@ class AirPass extends Pass {
         uProjInv: { value: new THREE.Matrix4() }, uViewInv: { value: new THREE.Matrix4() }, uShadowMatrix: { value: new THREE.Matrix4() },
         uCamPos: { value: new THREE.Vector3() }, uSunDir: shared.sunDir, uSunColor: shared.sunColor,
         uAmbient: { value: new THREE.Color(0.012, 0.012, 0.014) },
-        uTime: shared.time, uFrame: { value: 0 }, uDensity: { value: 0.026 }, uMaxDist: { value: 85 }, uG: { value: 0.62 }, uSunK: { value: 1 },
-        uHall: { value: new THREE.Vector3(5, -100, 13) },
+        // thin air that scatters only mildly forward: the shaft is wide, and denser or sharper air whites out the view towards the sun
+        uTime: shared.time, uFrame: { value: 0 }, uDensity: { value: 0.009 }, uMaxDist: { value: 85 }, uG: { value: 0.3 }, uSunK: { value: 1 },
+        uShaft: { value: new THREE.Vector3(16, 0, 30) },
         tDust: { value: dustTexture() },
       },
       vertexShader: FULLSCREEN_VERT, fragmentShader: MARCH, depthTest: false, depthWrite: false,

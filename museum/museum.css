@@ -1,5 +1,5 @@
 /* The interface is almost nothing: a column of dots, one line of caption, the trial's question.
-   Colours are taken from the hall (sunlit plaster, stone ink) and from the rotunda (gold on black). */
+   Colours are taken from the well: sunlit plaster and stone ink up in the light, gold on black down in the dark. */
 
 :root {
   --plaster: #f6ecd8;
@@ -31,13 +31,13 @@ body {
 
 #view { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
 
-/* the light the visitor's eyes adjust from while the hall is being prepared */
+/* the light the visitor's eyes adjust from while the well is being prepared */
 #light {
   position: fixed; inset: 0; pointer-events: none; z-index: 5;
   background: radial-gradient(120% 90% at 62% 46%, #fffaf0 0%, #f6ecd8 55%, #ecdcc0 100%);
   transition: opacity 1.6s ease;
 }
-/* how far the hall is from ready: a hairline that fills with the real work done */
+/* how far the well is from ready: a hairline that fills with the real work done */
 #light::after {
   content: ''; position: absolute; left: 50%; bottom: 14vh; width: 132px; height: 1px; margin-left: -66px;
   background: linear-gradient(to right, #9c7a3c calc(var(--load, 0) * 100%), rgba(156, 122, 60, .2) calc(var(--load, 0) * 100%));
@@ -47,7 +47,7 @@ body.ready #light { opacity: 0; }
 #ui { position: fixed; inset: 0; pointer-events: none; z-index: 3; }
 #ui > * { pointer-events: auto; }
 
-/* --- wayfinding: one dot per room, a diamond for the rotunda ------------------------------- */
+/* --- wayfinding: one dot per group of records down the ramp, a diamond for the trial -------- */
 #rail {
   position: absolute; right: max(14px, env(safe-area-inset-right)); top: 50%; transform: translateY(-50%);
   display: flex; flex-direction: column; align-items: flex-end;
@@ -65,10 +65,10 @@ body.ready #rail { opacity: 1; }
 }
 #rail button.gap { height: 26px; pointer-events: none; }
 #rail button.gap::before { width: 1px; height: 12px; margin-top: -6px; right: 10.5px; border-radius: 0; opacity: .35; }
-#rail button.sanctum { height: 30px; }
-#rail button.sanctum::before { width: 6px; height: 6px; margin-top: -3px; right: 8px; border-radius: 0; transform: rotate(45deg); }
+#rail button.trial { height: 30px; }
+#rail button.trial::before { width: 6px; height: 6px; margin-top: -3px; right: 8px; border-radius: 0; transform: rotate(45deg); }
 #rail button:hover::before, #rail button:focus-visible::before, #rail button.here::before { opacity: 1; transform: scale(2); }
-#rail button.sanctum:hover::before, #rail button.sanctum:focus-visible::before, #rail button.sanctum.here::before { transform: rotate(45deg) scale(1.7); }
+#rail button.trial:hover::before, #rail button.trial:focus-visible::before, #rail button.trial.here::before { transform: rotate(45deg) scale(1.7); }
 #rail button span {
   position: absolute; right: 30px; top: 50%; transform: translate(6px, -50%); white-space: nowrap;
   font-size: 14px; font-weight: 600; letter-spacing: -.01em; color: #fffaf0; text-shadow: 0 1px 12px rgba(50, 30, 5, .85), 0 0 2px rgba(50, 30, 5, .6);

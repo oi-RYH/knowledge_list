@@ -368,7 +368,7 @@ export async function buildSteles(scene, layout, textures, { time, renderer }) {
     const { item } = slot;
     const look = LOOK[item.status] || LOOK.unreviewed;
     const group = new THREE.Group();
-    group.position.set(slot.x, 0, slot.z);
+    group.position.set(slot.x, slot.y, slot.z);
     group.rotation.y = slot.yaw;
     const text = inscription(item.title, anisotropy);
 

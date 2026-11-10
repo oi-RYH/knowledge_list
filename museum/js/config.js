@@ -15,32 +15,36 @@ export const SOURCES = {
   exhibit: ['./museum/data/exhibit.ko.json'],
 };
 
-/** Metres. The hall is generated from these, so changing one keeps everything consistent. */
+/** Metres, unless noted. The well is generated from these, so changing one keeps everything consistent. */
 export const DIM = {
-  W: 5.0,            // half width of the nave
-  BAY: 5.0,          // length of one bay; one stele stands on each side of every bay
-  ARCH_R: 1.55,      // half width of an arch opening
-  ARCH_SPRING: 4.6,  // height where the arch starts to curve
-  CORNICE: 7.1,      // top of the walls, where the vault springs
-  WALL_T: 0.9,       // thickness of the arcade wall
-  TERRACE: 2.6,      // width of the terrace outside the arcade
-  ATRIUM_BAYS: 2,    // open-sky court between the two wings
-  EYE: 1.62,         // camera height
-  START: 3.5,        // distance from the back wall to the first bay
-  SANCTUM_R: 9.5,    // radius of the rotunda
+  N: 20,            // bays in one turn of the ramp; one stele stands in each
+  RISE: 6.4,        // the ramp falls this much in one turn
+  R_WALL: 16.0,     // inner face of the outer wall
+  WALL_T: 0.9,      // its thickness
+  R_IN: 11.0,       // inner edge of the ramp: the radius of the shaft
+  R_CAM: 13.3,      // the line the visitor walks
+  R_STELE: 15.15,   // where the steles stand, in front of the piers
+  SLAB: 0.5,        // thickness of the ramp
+  ARCH_R: 1.45,     // half width of an arch in the outer wall
+  SILL: 0.85,       // height of the low wall under an open arch
+  SPRING: 3.9,      // where an arch starts to curve
+  DEEP: 2,          // turns of the ramp that lie below the sea, where the wall is closed
+  TURN_IN: 0.35,    // each stele is turned this far (radians) towards the visitor coming down
+  STOP_R: 7.4,      // how far from the axis the visitor stands for the trial
+  EYE: 1.62,        // camera height
+  // Late-afternoon sun, low, from the far side of the entry.
+  SUN_AZ: 11.25,    // its bearing, in bays. The quarter bay sends each arch's light onto a stele across the shaft.
+  SUN_EL: 20,       // its height above the horizon, degrees
 };
-
-/** Late-afternoon sun: low, from the sea side, slightly behind the visitor. */
-export const SUN_DIR = [1.0, 0.42, 0.316];   // the z part walks each arch's light half a bay down the nave, onto the left steles
 
 export const STATUS = ['known', 'familiar', 'unlearned', 'unreviewed'];
 
 export const QUALITY = {
-  // dpr: device-pixel-ratio cap, msaa: scene samples, shadow: [w, h], mirror: fraction of screen,
-  // vol: volumetric steps, ao/dof: toggles, clothNear: distance (m) for full-detail veils
-  ultra:  { dpr: 2.0,  msaa: 4, shadow: [4096, 2048], mirror: 0.75, vol: 36, ao: true,  dof: true,  clothNear: 18 },
-  high:   { dpr: 1.5,  msaa: 4, shadow: [4096, 2048], mirror: 0.5,  vol: 28, ao: true,  dof: true,  clothNear: 12 },
-  medium: { dpr: 1.25, msaa: 0, shadow: [4096, 2048], mirror: 0.5,  vol: 18, ao: true,  dof: false, clothNear: 9 },
-  low:    { dpr: 1.0,  msaa: 0, shadow: [2048, 1024], mirror: 0.35, vol: 12, ao: false, dof: false, clothNear: 7 },
+  // dpr: device-pixel-ratio cap, msaa: scene samples, shadow: side of the sun's (square) shadow map,
+  // mirror: fraction of screen, vol: volumetric steps, ao/dof: toggles, clothNear: distance (m) for full-detail veils
+  ultra:  { dpr: 2.0,  msaa: 4, shadow: 4096, mirror: 0.75, vol: 36, ao: true,  dof: true,  clothNear: 18 },
+  high:   { dpr: 1.5,  msaa: 4, shadow: 4096, mirror: 0.5,  vol: 28, ao: true,  dof: true,  clothNear: 12 },
+  medium: { dpr: 1.25, msaa: 0, shadow: 4096, mirror: 0.5,  vol: 18, ao: true,  dof: false, clothNear: 9 },
+  low:    { dpr: 1.0,  msaa: 0, shadow: 2048, mirror: 0.35, vol: 12, ao: false, dof: false, clothNear: 7 },
 };
 export const QUALITY_ORDER = ['low', 'medium', 'high', 'ultra'];

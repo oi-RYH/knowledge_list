@@ -1,4 +1,4 @@
-// The trial. In the rotunda the presence puts questions drawn from the records; the visitor answers
+// The trial. On the floor of the well the presence puts questions drawn from the records; the visitor answers
 // by choosing. Nothing is written: the verdict is given in light. Results stay in this browser and
 // never touch the records themselves.
 

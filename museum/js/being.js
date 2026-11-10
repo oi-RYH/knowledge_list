@@ -1,4 +1,4 @@
-// The presence in the rotunda. It is not a figure. What the visitor sees is the three-dimensional
+// The presence in the shaft of the well. It is not a figure. What the visitor sees is the three-dimensional
 // shadow of a four-dimensional body (the 600-cell: 120 vertices, 720 edges) turning in its own
 // space, with a light at its heart. It asks, and it answers by how it shines.
 
@@ -156,8 +156,8 @@ export function buildBeing(scene, position, { rounds = 7 } = {}) {
   group.add(light);
   scene.add(group);
 
-  let mood = 0, pulse = 0, t = 0, speed = 1, flourish = 0;
-  const baseY = position.y;
+  let mood = 0, pulse = 0, t = 0, speed = 1, flourish = 0, gain = 1, lightGain = 1;
+  let baseY = position.y;
   const cGold = new THREE.Color(1, 0.86, 0.6), cDusk = new THREE.Color(0.6, 0.36, 1), cTmp = new THREE.Color();
 
   return {
@@ -169,13 +169,20 @@ export function buildBeing(scene, position, { rounds = 7 } = {}) {
     /** A round has ended; `score` of `rounds` were right. */
     close(score) { flourish = score / rounds; },
     reset() { marks.fill(0); },
+    /** The height it hovers at: it keeps level with the visitor all the way down. */
+    moveTo(y) { baseY = y; },
+    /**
+     * How brightly its body shines, and how strongly it lights the place. They are set apart: up in
+     * daylight the body has to outshine the sunlit wall behind it, while down in the dark its light has to carry.
+     */
+    setGain(body, cast = 1) { gain = body; lightGain = cast; },
     setResolution(w, h) { uniforms.uRes.value.set(w, h); uniforms.uWidth.value = Math.max(1.3, h / 620); },
-    /** @param presence 0 far down the hall .. 1 standing before it */
+    /** @param presence how awake it is: 0 faint .. 1 as it is before the visitor at the trial */
     update(dt, presence, time) {
       mood *= Math.exp(-dt * 0.5); pulse *= Math.exp(-dt * 1.6); flourish *= Math.exp(-dt * 0.35);
       speed += (1 - speed) * (1 - Math.exp(-dt * 0.9));
       t += dt * speed * (0.55 + 0.45 * presence);
-      const k = 0.2 + 0.8 * presence;
+      const k = (0.2 + 0.8 * presence) * gain;
       uniforms.uT.value = t;
       uniforms.uMood.value = mood + flourish * 0.6;
       uniforms.uK.value = k * (1 + pulse * 0.6 + flourish);
@@ -200,7 +207,8 @@ export function buildBeing(scene, position, { rounds = 7 } = {}) {
       }
       motes.attributes.position.needsUpdate = true; motes.attributes.color.needsUpdate = true;
       light.color.copy(cTmp.copy(cGold).lerp(cDusk, cold * 0.8));
-      light.intensity = (14 + presence * 56) * (1 + warm * 1.6 + pulse * 0.25 + flourish * 1.5) * (1 - cold * 0.55);
+      // the swing of a verdict is kept moderate: the walls here are pale, and a stronger burst would white them out
+      light.intensity = (14 + presence * 56) * lightGain * (1 + warm * 0.75 + pulse * 0.2 + flourish * 0.8) * (1 - cold * 0.55);
       light.shadow.needsUpdate = presence > 0.02;
     },
   };

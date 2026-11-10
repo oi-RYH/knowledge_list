@@ -1,6 +1,6 @@
-// Sound, synthesised in the browser: the sea beyond the arcade, the air of the hall, a low drone in
-// the rotunda, linen being drawn off stone, and the presence's verdict. Silent until the visitor
-// asks for it.
+// Sound, synthesised in the browser: the sea beyond the arches, the air of the galleries, a low
+// drone down in the well, linen being drawn off stone, and the presence's verdict. Silent until the
+// visitor asks for it.
 
 export class Sound {
   constructor() {
@@ -55,12 +55,12 @@ export class Sound {
       this.#noise().connect(f).connect(g).connect(this.sea);
     }
 
-    // hall: barely there
+    // the galleries: barely there
     this.air = c.createGain(); this.air.gain.value = 0;
     const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 220;
     this.#noise().connect(lp).connect(this.air).connect(this.reverb);
 
-    // rotunda: a stack of fifths that beats against itself
+    // the depths: a stack of fifths that beats against itself
     this.drone = c.createGain(); this.drone.gain.value = 0;
     const dlp = c.createBiquadFilter(); dlp.type = 'lowpass'; dlp.frequency.value = 520;
     this.drone.connect(dlp); dlp.connect(this.master); dlp.connect(this.reverb);
@@ -74,7 +74,7 @@ export class Sound {
     }
   }
 
-  /** Mix follows where the visitor is. `inside` is 0 in the nave, 1 in the rotunda. */
+  /** Mix follows where the visitor is. `inside` is 0 up in the sun, 1 down in the dark of the well. */
   update(inside) {
     if (!this.on) return;
     const t = this.ctx.currentTime;

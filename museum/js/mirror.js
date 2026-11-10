@@ -1,6 +1,6 @@
-// Planar reflection for the wet stone floor. The scene is rendered once more from a camera mirrored
-// about the floor plane; the floor material then reads that image as its specular reflection, blurred
-// by roughness (via mipmaps) and weighted by Fresnel like any other reflection.
+// Planar reflection for the polished floor of the well. The scene is rendered once more from a camera
+// mirrored about the floor plane; the floor material then reads that image as its specular reflection,
+// blurred by roughness (via mipmaps) and weighted by Fresnel like any other reflection.
 
 import * as THREE from 'three';
 
@@ -85,38 +85,9 @@ export class PlanarMirror {
 const UP = new THREE.Vector3(0, 1, 0);
 const POINT = new THREE.Vector3();
 
-/** Hooks that turn a planar-mapped PBR material into the wet, reflecting floor. */
+/** Hooks that make a planar-mapped PBR material reflect what the mirror saw. */
 export const FLOOR_HOOKS = {
-  pars: /* glsl */ `
-    uniform sampler2D tMirror; uniform mat4 uMirrorMatrix; uniform float uMirrorK;
-    uniform vec4 uPool;        // centre xz, half size xz of the court's basin (0 size = none)
-    uniform float uWet;        // how much standing water the stone carries
-    uniform float uTime;
-    float fhash(vec2 p){ vec3 p3 = fract(vec3(p.xyx) * .1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
-    float fnoise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
-      return mix(mix(fhash(i), fhash(i + vec2(1, 0)), f.x), mix(fhash(i + vec2(0, 1)), fhash(i + vec2(1, 1)), f.x), f.y); }
-  `,
-  albedo: /* glsl */ `
-    // puddles: broad, irregular, never the same in two bays
-    float wetN = fnoise(vWPos.xz * .23 + 11.) * .6 + fnoise(vWPos.xz * .71 + 3.) * .3 + fnoise(vWPos.xz * 2.3) * .1;
-    float wet = smoothstep(.52 - uWet * .25, .66 - uWet * .2, wetN);
-    vec2 poolD = abs(vWPos.xz - uPool.xy) - uPool.zw;
-    float pool = uPool.z > 0. ? smoothstep(.02, -.02, max(poolD.x, poolD.y)) : 0.;
-    wet = max(wet, pool);
-    diffuseColor.rgb *= mix(1., .8, wet);                       // wet stone is darker
-    diffuseColor.rgb = mix(diffuseColor.rgb, vec3(.03, .075, .075), pool * .92);
-  `,
-  rough: /* glsl */ `
-    roughnessFactor = mix(roughnessFactor, .05, wet * .93);
-  `,
-  normal: /* glsl */ `
-    {
-      // water lies flat over the stone's relief, with a slow ripple in the basin
-      vec2 rp = vWPos.xz * 3.1;
-      vec3 ripple = normalize(vec3(sin(rp.x + uTime * .9) * sin(rp.y * .8 - uTime * .7), 60., cos(rp.y + uTime * .8) * sin(rp.x * .7 + uTime * .5)));
-      shadeN = normalize(mix(shadeN, mix(vec3(0., 1., 0.), ripple, pool), wet * .9));
-    }
-  `,
+  pars: /* glsl */ `uniform sampler2D tMirror; uniform mat4 uMirrorMatrix; uniform float uMirrorK;`,
   light: /* glsl */ `
     {
       vec4 mc = uMirrorMatrix * vec4(vWPos, 1.);

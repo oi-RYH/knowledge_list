@@ -1,9 +1,10 @@
-// The world outside the arcade: a late-afternoon sky and the sea below the terrace.
+// The world outside the arches: a late-afternoon sky, and the sea the well stands in. The sea lies
+// all around the round wall, laps against it, and is left out inside it.
 
 import * as THREE from 'three';
 import { HASH, NOISE, SKY } from './glsl.js';
 
-export function buildSkySea(scene, { sunDir, sunColor, shoreX, zMid, time }) {
+export function buildSkySea(scene, { sunDir, sunColor, radius, seaY, time }) {
   const skyUniforms = {
     uSun: { value: sunDir },
     uSunDisk: { value: 1 },
@@ -51,12 +52,12 @@ export function buildSkySea(scene, { sunDir, sunColor, shoreX, zMid, time }) {
     new THREE.PlaneGeometry(6000, 6000),
     new THREE.ShaderMaterial({
       fog: false,
-      uniforms: { ...skyUniforms, uSunColor: { value: sunColor }, uShoreX: { value: shoreX } },
+      uniforms: { ...skyUniforms, uSunColor: { value: sunColor }, uShore: { value: radius } },
       vertexShader: /* glsl */ `
         varying vec3 vW;
         void main(){ vec4 w = modelMatrix * vec4(position, 1.); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`,
       fragmentShader: /* glsl */ `
-        uniform float uTime; uniform vec3 uSunColor; uniform float uShoreX;
+        uniform float uTime; uniform vec3 uSunColor; uniform float uShore;
         varying vec3 vW;
         ${HASH}${NOISE}${SKY}
         // summed slope of a few swells rolling in towards the wall
@@ -71,6 +72,8 @@ export function buildSkySea(scene, { sunDir, sunColor, shoreX, zMid, time }) {
           return g;
         }
         void main(){
+          float shore = length(vW.xz) - uShore;       // distance out from the wall of the well
+          if (shore < -.4) discard;
           vec3 toCam = cameraPosition - vW;
           float dist = length(toCam);
           vec3 V = toCam / dist;
@@ -84,11 +87,11 @@ export function buildSkySea(scene, { sunDir, sunColor, shoreX, zMid, time }) {
           float sd = max(dot(normalize(R), uSun), 0.);
           vec3 glitter = uSunColor * (pow(sd, 900.) * 9. + pow(sd, 90.) * .22 + pow(sd, 14.) * .012);
           // water body: turquoise shallows by the wall, deep blue offshore
-          float off = smoothstep(0., 140., vW.x - uShoreX);
+          float off = smoothstep(0., 140., shore);
           vec3 body = mix(vec3(.035, .36, .36), vec3(.012, .085, .21), off);
           body *= .5 + 1.2 * max(dot(N, uSun), 0.);
           // foam where the swell meets the wall
-          float lap = smoothstep(3.2, 0., vW.x - uShoreX);
+          float lap = smoothstep(3.2, 0., shore);
           float foam = smoothstep(.55, .8, vnoise(vW.xz * 1.8 + vec2(uTime * .25, 0.)) * .6 + lap * .7) * lap;
           body = mix(body, vec3(.95, .93, .86) * 1.6, foam * .7);
           vec3 c = mix(body, refl, F) + glitter * (1. - foam);
@@ -99,7 +102,7 @@ export function buildSkySea(scene, { sunDir, sunColor, shoreX, zMid, time }) {
     }),
   );
   sea.rotation.x = -Math.PI / 2;
-  sea.position.set(shoreX + 3000, -2.6, zMid);
+  sea.position.y = seaY;
   scene.add(sea);
 
   return { sky, sea, skyUniforms };
