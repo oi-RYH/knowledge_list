@@ -12,7 +12,7 @@ python3 museum/tools/serve.py
 
 그다음 브라우저에서 `http://localhost:4173`을 엽니다.
 
-GitHub Pages로 띄우려면 저장소 설정의 Pages에서 배포 브랜치를 `web`, 폴더를 `/ (root)`로 지정합니다. 그러면 `https://oi-ryh.github.io/knowledge_list/`에서 열립니다.
+실제 주소는 `https://oi-ryh.github.io/knowledge_list/`입니다. 저장소 설정의 Pages에서 배포 브랜치가 `web`, 폴더가 `/ (root)`로 지정되어 있고, `web`에 푸시하면 1~2분 뒤에 반영됩니다.
 
 ## 조작
 
@@ -80,17 +80,19 @@ node museum/tools/check-data.mjs
 node museum/tools/check-data.mjs ~/Documents/90-99_Shared-Etc/AI/knowledge_list
 ```
 
-### 에이전트가 계속 써넣게 하려면
+### 에이전트가 계속 써넣는 방식
 
-지금은 `main`을 건드리지 않기로 했기 때문에 전시 데이터가 `web` 브랜치에만 있습니다. 에이전트가 새 지식을 등록할 때 퀴즈도 같이 쓰게 하려면 두 가지가 필요합니다.
+`main`의 `AGENTS.md`에 `Museum Entries` 조항이 있습니다. 에이전트는 새 항목을 기록 파일에 등록할 때, 이 브랜치의 `museum/data/exhibit.ko.json`에 한글 이름과 한 줄 설명, 퀴즈 한두 문제를 함께 씁니다.
 
-1. 전시 데이터 파일을 `main`으로 옮기고, `museum/js/config.js`의 `SOURCES.exhibit` 맨 앞에 그 파일의 raw 주소를 넣습니다.
-2. `main`의 `AGENTS.md`에 아래 조항을 추가합니다.
+- 전시 데이터는 `web` 브랜치에만 둡니다. `main`에는 조항만 있고 박물관 파일은 없습니다.
+- 에이전트는 `web`이 체크아웃된 작업 폴더를 찾아 그 안의 파일을 고칩니다. 이 Mac에서는 이 폴더가 그 작업 폴더입니다. 작업 폴더가 없는 기기에서는 지식 저장소 옆에 `knowledge_list-web`을 새로 만듭니다.
+- 에이전트는 커밋이나 푸시를 하지 않습니다. 써넣은 내용은 `web`을 푸시해야 사이트에 반영됩니다.
+- 작업 폴더를 못 찾거나 파일을 못 쓰면 건너뛰고 알려 주기만 합니다. 그 항목은 영어 이름으로 나오고 퀴즈에서 빠집니다.
 
-```markdown
-## Museum Entries
+새 기록이 사이트에 다 보이려면 두 브랜치를 모두 푸시해야 합니다. 기록은 `main`, 한글 설명과 퀴즈는 `web`입니다. `web`은 이 폴더에서 올립니다.
 
-When registering a new item in `TECH_KNOWLEDGE.md` or `WORKFLOW_KNOWLEDGE.md`, add a matching entry to the exhibit data file under the same item name: a short Korean name (`ko`), one plain Korean sentence describing it as it appeared in the work (`note`), and one or two multiple-choice questions (`quiz`) with four choices and the index of the correct one. Write questions that test the idea, not the wording of the note. Do not change an item's status because a quiz entry exists.
+```sh
+git push origin web
 ```
 
 ## 파일

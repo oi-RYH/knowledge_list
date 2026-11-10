@@ -10,8 +10,8 @@ const base = override ? override.replace(/\/?$/, '/') : null;
 export const SOURCES = {
   tech: base ? [base + 'TECH_KNOWLEDGE.md'] : [RAW + 'TECH_KNOWLEDGE.md', './TECH_KNOWLEDGE.md'],
   workflow: base ? [base + 'WORKFLOW_KNOWLEDGE.md'] : [RAW + 'WORKFLOW_KNOWLEDGE.md', './WORKFLOW_KNOWLEDGE.md'],
-  // Korean names, one-line notes and quiz questions. When agents start maintaining this file
-  // on `main`, put its raw URL in front of the local copy.
+  // Korean names, one-line notes and quiz questions. This file stays on the `web` branch; agents
+  // add to it through a worktree of that branch (see "Museum Entries" in AGENTS.md on `main`).
   exhibit: ['./museum/data/exhibit.ko.json'],
 };
 

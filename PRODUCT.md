@@ -26,7 +26,7 @@ The exhibits are the owner's own knowledge records, read from the repository at 
 
 - The records are maintained by AI agents (Codex and others) under the rules in `AGENTS.md`. New items are registered as unreviewed; a status changes only when the owner explicitly confirms it.
 - `main` holds only the rules and the records. All site work stays on the `web` branch.
-- GitHub Pages is enabled on the repository.
+- GitHub Pages is enabled on the repository and deploys `web` on every push.
 - Local clones may hold records that have not been pushed yet; the site shows what is on GitHub.
 
 ## Capabilities and Constraints
@@ -38,8 +38,8 @@ The exhibits are the owner's own knowledge records, read from the repository at 
 - The site never changes a status. Quiz results stay in the browser.
 - Visible text is limited to concept names, one-line descriptions, and quiz questions with their choices.
 - An item with no Korean entry still appears, with its English name and note, and is left out of the quiz.
-- Open decision: when the exhibit data file and the agent rule for writing it move to `main`.
-- Open decision: which branch GitHub Pages publishes from (it must be `web` for this site to be live).
+- The agent rule for writing exhibit entries is the section "Museum Entries" in `AGENTS.md` on `main`. The exhibit data file itself stays on `web`; agents edit it through a worktree of that branch and do not commit or push it. (Decided 2026-11-10.)
+- GitHub Pages publishes the `web` branch from its root: https://oi-ryh.github.io/knowledge_list/
 
 ## Brand Commitments
 

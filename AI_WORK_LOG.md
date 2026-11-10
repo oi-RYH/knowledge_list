@@ -142,3 +142,84 @@ None of these were registered in `TECH_KNOWLEDGE.md` or `WORKFLOW_KNOWLEDGE.md`,
 
 - `TECH_KNOWLEDGE.md`: Web Graphics (Camera dolly and animation easing; Scroll-driven 3D narrative and progressive enhancement; WebGL scene preloading); Development Tools (Git repository)
 - `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics; Environment Setup (synchronizing knowledge with Git)
+
+## 2026-11-10 / Publish the museum and add the agent rule
+
+- Date (YYYY-MM-DD): 2026-11-10
+- Work title: Publish the site on GitHub Pages; add the Museum Entries rule to `AGENTS.md`
+
+### Purpose
+
+- Put the site online, and have agents write museum entries for records registered from now on.
+
+### User Request
+
+- Push the current state to GitHub.
+- After the owner set the Pages branch to `web`: confirm that the live site works.
+- Add a rule to `AGENTS.md` on `main` so that agents also write quiz entries. Of the scopes offered, the owner chose "rule only": no data file on `main`.
+
+### Work AI Actually Performed
+
+1. Committed the site to `web` (`8755427`) and pushed it.
+2. Waited for the Pages deployment, then checked the live site at https://oi-ryh.github.io/knowledge_list/: served files identical to the commit, no console or WebGL errors, and walking, approaching a stele and answering one quiz question through real input. Removed that test answer from the browser's storage and stopped the local preview server.
+3. Added the section "Museum Entries" to `AGENTS.md` in a temporary worktree of `origin/main`, committed it (`492adf3`) and pushed it to `main`. No other file on `main` changed. The owner's local clone was not touched.
+4. Updated this branch's documents to describe the rule and the settled decisions.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| GitHub Pages (branch deployment) | Hosting | `web` branch, root folder |
+| GitHub REST API (public, unauthenticated) | See whether Pages was enabled and whether the deployment run had finished | repository |
+| Temporary detached git worktree | Commit to `main` without touching the owner's clone, which has uncommitted records and is behind `origin/main` | scratch folder, removed afterwards |
+
+### Commands Run
+
+```text
+git add .gitignore .nojekyll AI_WORK_LOG.md DESIGN.md PRODUCT.md index.html museum
+git commit; git push -u origin web
+curl <Pages URL, raw files, api.github.com repo / actions runs / deployments>     # status checks only
+git fetch origin
+git worktree add --detach <scratch>/kl-main origin/main
+git commit (AGENTS.md); git push origin HEAD:main
+git worktree remove <scratch>/kl-main
+pkill -f "museum/tools/serve.py 4173"                                           # stop the local preview
+git commit; git push origin web                                                 # these documents
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| Pages source | branch `web`, folder `/ (root)` | Set by the owner; every push to `web` redeploys in one to two minutes |
+| Where museum entries are written | `museum/data/exhibit.ko.json` on `web` | Owner's choice, to keep `main` to rules and records |
+| Agents and git on `web` | No commit or push unless asked | Same as checklist changes; entries go live when the owner pushes `web` |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `AGENTS.md` (on `main`) | Changed | New section "Museum Entries", 14 lines |
+| `museum/README.md`, `PRODUCT.md`, `AI_WORK_LOG.md` (on `web`) | Changed | Describe the rule, the live address and the settled decisions |
+| `museum/js/config.js` (on `web`) | Changed | Comment only |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| Wording of the rule, including that agents look for a `web` worktree and create `../knowledge_list-web` on a device that has none | Needed for "rule only" to work on any device | Scope chosen by the owner; wording not directed |
+| Agents do not commit or push `web` | Matches how checklist changes are handled | No |
+| Committed to `main` from a temporary worktree of `origin/main` | The owner's clone has uncommitted records and is behind `origin/main` | No |
+| Left the owner's local clone as it was | Same reason; agents on this machine get the rule after the owner's next sync | No |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Detached worktree and `git push origin HEAD:main` | How a commit reached `main` without checking `main` out locally | Unreviewed |
+| Pages deployment run | Why the site appeared about two minutes after the setting was saved | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Development Tools (Git repository; Cross-agent shared instruction repository)
+- `WORKFLOW_KNOWLEDGE.md`: Environment Setup (synchronizing shared AI knowledge across devices with Git)
