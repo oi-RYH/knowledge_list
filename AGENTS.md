@@ -57,3 +57,17 @@ Include `Date Added` and `Last Confirmed` columns for every checklist item. Use 
 ## Record Actual Work by Project
 
 For significant projects, create `AI_WORK_LOG.md` inside the project based on `AI_WORK_LOG_TEMPLATE.md`. Record the purpose, user request, work AI actually performed, technologies and tools used, commands actually run, important settings and options, files created or changed, technical decisions AI made on the user's behalf, items requiring a knowledge check, and related TECH and WORKFLOW checklist items. Do not record work that was not performed or commands that were not run.
+
+## Museum Entries
+
+The knowledge records are also shown as a walkable museum: the `web` branch of the knowledge repository, published with GitHub Pages. Each record stands there as a stele, and the visitor is quizzed on the records in its last room. The Korean name, the one-line description, and the quiz questions for each record live in `museum/data/exhibit.ko.json` on the `web` branch. Keep `main` to the rules and the records; never add museum files to `main`.
+
+When registering a new item in `TECH_KNOWLEDGE.md` or `WORKFLOW_KNOWLEDGE.md`, also add its museum entry:
+
+- Work in a worktree of the knowledge repository that has `web` checked out. Find it with `git worktree list`, run in the knowledge repository. If this device has none, create one beside the repository with `git fetch origin web` and `git worktree add ../knowledge_list-web web`; this does not touch the working tree of `main`. Apply the Safe Pre-task Knowledge Sync rules to that worktree as well: pull only when it is clean, and fast-forward only.
+- Add the entry under `tech` (for `TECH_KNOWLEDGE.md`) or `workflow` (for `WORKFLOW_KNOWLEDGE.md`), keyed by the item name exactly as written in the checklist (backticks may be left out). Give it `ko` (a short Korean name that fits on a stone, about fifteen characters or fewer), `note` (one plain Korean sentence saying what it is or how it was used in the work), and `quiz` (one or two questions, each with `q`, four choices in `o`, and `a`, the zero-based index of the one correct choice). If the item starts a new section, add that section heading's Korean name under `categories`.
+- Write questions that test the idea, not the wording of the note, with wrong choices that are plausible but clearly wrong. Follow the voice of the existing entries. This file's content is Korean because the museum is for the user to read; it is the one exception to writing agent files in English.
+- Keep the file valid JSON and leave existing entries as they are. When Node.js is available, check the result with `node museum/tools/check-data.mjs <directory holding the checklists>`, run in the `web` worktree.
+- Do not commit or push the `web` branch unless the user asks. Tell the user that a museum entry was added and that it goes live when `web` is pushed.
+
+This is best-effort. If the worktree cannot be found or created, the file cannot be written, or the check fails, continue the requested task and briefly tell the user that the museum entry is still to be written. A museum entry or a quiz result never changes an item's status; statuses change only as described above.
