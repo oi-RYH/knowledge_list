@@ -846,3 +846,74 @@ git push origin web
 - `TECH_KNOWLEDGE.md`: Web Graphics
 - `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
 
+## 2026-11-11 / Sea and sky painted alike
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: One handling for sea and sky: a finer brush for both
+
+### Purpose
+
+- After the last two changes the sea was the shader's smooth picture and the sky was broad, thick strokes. The owner found the sea too smooth to be paint, the sky's brush too thick to look good, and the two too unlike to sit in one picture.
+
+### User Request
+
+- "바다는 이제 너무 부드러워서 그림 느낌이 없고, 하늘은 붓이 너무 두꺼워서 퀄리티가 낮아보여. 그리고 이 둘이 너무 차이가 나서 이질감이 강하게 들어." (with a screenshot of the horizon through an arch)
+- "더 다듬기" (after seeing the result)
+- "올려줘" (in answer to whether to publish the picture as it now is)
+
+### Work AI Actually Performed
+
+1. Painted the sea again, but in its own strokes: small level ones, each a slightly different blue between turquoise and violet, now and then a lighter one. Its waves are no longer put back sharply over the strokes (that was the photograph showing through the paint the owner first objected to); only its glitter is.
+2. Gave the sky a brush about two and a half times finer than before, laid thinly, with strokes that melt into one another and vary a little in blue.
+3. Kept both on one scheme (the same layout by direction, the sea's brush a little smaller than the sky's), and kept the sky's strokes above the horizon.
+4. Stopped the wall's colour leaking into the sea's edge: a stroke of sea whose middle lies on the wall is not laid, and sea and sky are read narrowly enough not to take in what stands beside them.
+5. Measured the flicker again, standing still: sky 0.01, just under the horizon 0.01, lower 0.07, near the tower 0.19 (the camera's own picture: 0.06, 0.07 and 0.28 for the three bands of sea). Frame time unchanged, about 15.5 ms against 10.8 ms.
+6. Asked to refine further, looked at the arch again: the sea read as a mosaic, every stroke its own colour, and the sky as fine scales. The colour of both now runs in long level bands, with only a little of each stroke's own; the sea's strokes are slender and level; the sky's paint is thinner and its strokes melt further. Flicker after this: sky 0.02, under the horizon 0.01, lower 0.09, near the tower 0.16.
+7. On the owner's request, committed this to `web` and pushed it.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| No new technology | Settings of the stroke pass chosen per kind of surface (a thing, the sea, the sky) | `paint.js`, `STROKES` and `FINISH` |
+
+### Commands Run
+
+```text
+node --check museum/js/paint.js
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| Brush for sky / sea | 0.7 / 1.0 doublings finer than the scheme's | Was 0.6 broader: the sky's strokes are about 2.5 times smaller |
+| Paint thickness, sky / sea | 0.4 / 0.62 of a wall's | Thin paint: no thick ridges in the sky |
+| Edge softness, sky / sea | 0.09 / 0.03 of a cell more than on a thing | The sky's strokes melt; the sea's stay distinct |
+| Variation of one stroke, sea | value by up to 8%, hue between turquoise and violet | "Many blues at once"; the sky gets 38% of it |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `museum/js/paint.js` | Changed | Sea and sky handled alike; sea stroked again; edge leaks closed |
+| `museum/README.md`, `DESIGN.md`, `AI_WORK_LOG.md` | Changed | Describe it |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| The sea is stroked again, after the owner had asked for it to be left as it was | The owner's objection then was to rough strokes over a sharp sea; left alone it had no paint in it. Strokes of its own, with nothing sharp showing through, answer both | Partly: the owner asked for a painted feel; the means are AI's |
+| Committed and pushed to `web` only after the owner asked | Publishing is the owner's call | Yes ("올려줘") |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| None new | | |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+

@@ -12,9 +12,10 @@
 //    stroke belongs to one thing: it is laid out on that thing's surface, in the well's own
 //    coordinates (bearing, height, radius), so it stays put as the visitor walks, and it never
 //    takes its colour from another thing or runs over the edge onto one. That keeps every outline
-//    as clean as he kept them. The sky is too far to have a place and is laid out by direction.
-//    The sea is not stroked at all: its own waves are its brushwork, and broad strokes over them
-//    only hid them. It keeps the painter's colours and is otherwise left as it is.
+//    as clean as he kept them. Sea and sky are too far to have a place and are laid out by
+//    direction. They are painted alike, so that they belong to one picture: level strokes of a
+//    middling brush, each a slightly different blue, thinly laid; the sky's melt into one another,
+//    the sea's stay distinct. A stroke of sky never dips below the horizon.
 //
 // 3. The canvas. Light rakes the relief of the paint, the weave shows where the paint is thin,
 //    and the last touches go in sharply: glitter on the water, a rail, a letter's edge. The
@@ -79,8 +80,10 @@ void main(){
       // is laid in calm, as a distant sea is: a band of colour with a few long level streaks.
       float dist = length(P - uCamPos);
       vec2 px = uDepthTexel * 1.5;
-      float soft = (grey * 2. + lum(texture2D(tDiffuse, vUv + vec2(px.x, 0.)).rgb) + lum(texture2D(tDiffuse, vUv - vec2(px.x, 0.)).rgb)
-                  + lum(texture2D(tDiffuse, vUv + vec2(0., px.y)).rgb) + lum(texture2D(tDiffuse, vUv - vec2(0., px.y)).rgb)) / 6.;
+      vec4 around = vec4(lum(texture2D(tDiffuse, vUv + vec2(px.x, 0.)).rgb), lum(texture2D(tDiffuse, vUv - vec2(px.x, 0.)).rgb),
+                         lum(texture2D(tDiffuse, vUv + vec2(0., px.y)).rgb), lum(texture2D(tDiffuse, vUv - vec2(0., px.y)).rgb));
+      around = mix(around, vec4(grey), step(.2, abs(around - grey)));           // a neighbour that is not sea (a wall, a rail) is left out
+      float soft = (grey * 2. + around.x + around.y + around.z + around.w) / 6.;
       float calm = smoothstep(50., 380., dist);
       float seen = mix(grey, soft, smoothstep(25., 90., dist));
       float wave = mix(seen + (seen - .7) * 1.5, .7, calm);
@@ -160,7 +163,12 @@ vec4 clip0, clipU, clipV;           // where a point of this surface falls on th
 vec3 here, broadly;                 // the picture at this pixel, seen a hair wide and a big brush wide
 float solid;                        // 1 on a thing in the well, whose strokes must stay on it; 0 on sea and sky
 bool open;                          // this pixel is open sky
+float mine;                         // how far from the eye this pixel's own surface is
 float stray;                        // how far a load of the brush may stray in colour here
+float kind;                         // 0 a thing in the well, 1 the sea, 2 the sky
+vec2 like;                          // the range over which a stroke gives way to the picture here
+float melt;                         // how soft a stroke's edge is here: wet into wet in the sky
+float thick;                        // how thick the paint lies here
 
 // one stroke over what is already there
 void dab(vec3 col, float a, vec3 g, float cellPx, inout vec3 paint, inout float height){
@@ -173,7 +181,7 @@ void dab(vec3 col, float a, vec3 g, float cellPx, inout vec3 paint, inout float 
   float body = uBody * mix(.45, 1., smoothstep(.3, .95, lum(col)));                          // the lights are laid on thickest
   float bristly = mix(.35, 1., smoothstep(5., 20., cellPx));                                 // a small brush leaves a smoother dab
   paint = mix(paint, col * (1. + (hairs - .5) * .08 * bristly), a);
-  height = mix(height, body * (.6 + .12 * load + .08 * ridge + .26 * bristly * (hairs - .5)), a);
+  height = mix(height, thick * body * (.6 + .12 * load + .08 * ridge + .26 * bristly * (hairs - .5)), a);
 }
 
 // One size of stroke. uvm: this pixel on its surface; s: the short side of a cell, in the same units;
@@ -184,8 +192,9 @@ void lay(vec2 uvm, float s, float along, float girth, vec2 seed, float cellPx, f
   vec2 q = uvm / (s * ax);
   vec2 base = floor(q);
   float wrap = girth / ax.x;
-  float lod = max(log2(cellPx) - 1., 0.) + uLodShift;
-  float soft = clamp(1.1 / cellPx + .02, .02, .5);          // a clean edge, a pixel or so of softness
+  // (sea and sky are read more narrowly: they are smooth already, and a broad reading would take in the wall beside them)
+  float lod = max(log2(cellPx) - (kind > .5 ? 2.5 : 1.), 0.) + uLodShift;
+  float soft = clamp(1.1 / cellPx + .02 + melt, .02, .5);   // a clean edge, a pixel or so of softness; softer where strokes melt together
   // neighbouring strokes lean the same way, as a hand's do; the lean closes round the well with the strokes
   float lean = wrap >= 4. ? pnoise(q * .25 + seed.yx, wrap * .25) : wrap > 0. ? .5 : pnoise(q * .25 + seed.yx, 4096.);
   lean = (lean - .5) * uLean;
@@ -199,10 +208,10 @@ void lay(vec2 uvm, float s, float along, float girth, vec2 seed, float cellPx, f
     vec4 h = hash42(vec2(wrap > 0. ? mod(cell.x, wrap) : cell.x, cell.y) + seed);
     vec2 c = cell + .5 + lap + (h.xy - .5) * .6;
     vec2 d = (q - c) * ax;                                   // from the stroke's middle, in short sides of a cell
-    float ang = (h.z - .5) * uSpread + lean;
+    float ang = ((h.z - .5) * uSpread + lean) * (kind > .5 ? .3 : 1.);       // sea and sky are laid level
     vec2 dir = along > .5 ? vec2(-sin(ang), cos(ang)) : vec2(cos(ang), sin(ang));
     float al = dot(d, dir), ac = dot(d, vec2(-dir.y, dir.x));
-    float len = mix(1.25, 2.3, h.w), wid = mix(.32, .52, fract(h.w * 7.31 + h.z * 3.17));
+    float len = mix(1.25, 2.3, h.w), wid = mix(.32, .52, fract(h.w * 7.31 + h.z * 3.17)) * (kind > .5 && kind < 1.5 ? .7 : 1.);   // the sea's strokes are slender: lines of water
     float along01 = al / len;
     ac -= (fract(h.x * 23.9 + h.w * 11.3) - .5) * 1.3 * wid * (along01 * along01 - .35);   // the wrist turns: a stroke is a shallow arc
     if (abs(al) > len || abs(ac) > wid * 1.16) continue;
@@ -219,11 +228,15 @@ void lay(vec2 uvm, float s, float along, float girth, vec2 seed, float cellPx, f
     // A stroke belongs to one thing. If what is seen at its middle is something else (the stroke's middle is hidden
     // behind another thing, or lies past this thing's edge), it is not laid here, and no outline is painted across.
     if (solid > .5 && at.x > 0. && at.x < 1. && at.y > 0. && at.y < 1. && abs(eyeDepth(at) - cl.w) > .025 * cl.w + .1) continue;
-    // nor does a stroke of sky dip below the horizon, or take its colour from anything but sky
-    if (solid < .5 && at.x > 0. && at.x < 1. && at.y > 0. && at.y < 1. && (texture2D(tDepth, at).x > .99999) != open) continue;
+    // nor does a stroke of sky dip below the horizon, or a stroke of sea or sky take its colour from the wall beside it
+    if (solid < .5 && at.x > 0. && at.x < 1. && at.y > 0. && at.y < 1.) {
+      float there = texture2D(tDepth, at).x;
+      if ((there > .99999) != open) continue;
+      if (!open && cameraNear * cameraFar / (cameraFar - there * (cameraFar - cameraNear)) < mine * .5) continue;
+    }
     vec3 col = textureLod(tSrc, clamp(at, 0., 1.), lod).rgb;
     // it stops where the picture stops looking like it
-    m *= 1. - smoothstep(uLike.x, uLike.y, apart(col, here));
+    m *= 1. - smoothstep(like.x, like.y, apart(col, here));
     // Broad strokes are always there. A smaller one is there only if it differs from what a broad one would lay in,
     // and the smaller it is the more it must differ. Because this goes by the stroke's size on the screen and nothing
     // else, strokes come and go one at a time, and slowly, as the visitor's distance to them changes.
@@ -236,6 +249,18 @@ void lay(vec2 uvm, float s, float along, float girth, vec2 seed, float cellPx, f
     float warm = fract(h.y * 41.3 + h.z * 7.7) * 2. - 1., rose = fract(h.z * 23.1 + h.x * 5.9) * 2. - 1.;
     vec3 mixed = col * (1. + uBroken * stray * mix(2.2, 1., l) * (warm * vec3(1., .1, -1.) + rose * vec3(.3, -.36, .3)));
     col = mixed * (l / max(lum(mixed), 1e-4)) * (1. + (fract(h.x * 57.1 + h.w * 3.3) - .5) * uBroken * stray * 1.2);
+    if (kind > .5) {
+      // Water and sky are many blues at once, but not at random: the colour runs in long level bands, as lines of
+      // waves and layers of air do, and a stroke takes the colour of the band it lies in, give or take a little.
+      vec2 mid = c * ax * s;                                                  // where the stroke lies: bearing and height
+      bool water = kind < 1.5;
+      vec2 grain = water ? vec2(7., 95.) : vec2(3.2, 26.);
+      float bandA = pnoise(mid * grain + 31., 4096.) - .5, bandB = pnoise(mid * grain * vec2(.6, .47) + 77., 4096.) - .5;
+      float own = fract(h.x * 57.1 + h.w * 3.3) - .5;
+      float catchLight = water ? smoothstep(.9, 1., fract(h.z * 19.3 + h.y * 3.1)) * smoothstep(.02, .2, -mid.y) : 0.;   // near water, now and then a stroke catches the light
+      float much = water ? 1. : .3;
+      col = col * (1. + (bandA * .32 + own * .09 + catchLight * .2) * much) + (bandB * 1.6 + warm * .3) * vec3(-.045, .036, -.008) * much;
+    }
     float pr = fract(h.w * 5.13 + h.x * 9.71);               // which stroke was laid over which
     vec3 g = vec3(al / len, ac / rim, key);
     if (pr > p1) { p2 = p1; c2 = c1; a2 = a1; g2 = g1; p1 = pr; c1 = col; a1 = m; g1 = g; }
@@ -251,7 +276,9 @@ void main(){
   vec3 P = (uViewInv * vec4(vc, 1.)).xyz;
   float r = length(P.xz);
   open = depth > .99999;
+  mine = -vc.z;
 
+  float finer = 0.;                 // how many doublings smaller than its place in the scheme the brush is here
   vec2 uvm; float closes = 0.; float cls; float L = 0.; float unit; vec3 runs;   // runs.x: which way the strokes go (0 along u, 1 along v)
   if (depth > .99999 || r > uWell.x) {
     // Sea and sky: laid out by direction, as bearing and height in Mercator's way. That keeps angles, so a brush mark
@@ -265,9 +292,13 @@ void main(){
     clipV = uViewProj * vec4(-D.y * D.x, ce * ce, -D.y * D.z, 0.);
     unit = 6.2831853 / 4096.;
     closes = 1.; cls = 4.;
-    L = clamp(log2(uCell / (uFocal * unit * ce)) + .6, -2., 8.);   // broader strokes than indoors, smaller ones only where the water glitters
+    // a middling brush for both, the sea's a little smaller than the sky's, so the two belong to one picture
+    finer = open ? .7 : 1.;
+    L = clamp(log2(uCell / (uFocal * unit * ce)) - finer, -3., 8.);
     runs = vec3(0.);                                          // level strokes, as water and sky are painted
-    solid = 0.; stray = depth > .99999 ? .8 : 1.6;            // and the water is many blues at once
+    solid = 0.; stray = 0.; kind = open ? 2. : 1.;
+    like = open ? vec2(.12, .2) : vec2(.22, .34);             // a stroke of sea rides over the waves; only a wall or the sky stops it
+    melt = open ? .14 : .03; thick = open ? .28 : .62;        // thin paint, the sky's strokes melting into one another
   } else {
     // the well: which way the surface faces decides which two of bearing, height and radius it is laid out in
     vec3 vl = viewAt(vUv - vec2(uDepthTexel.x, 0.)), vr = viewAt(vUv + vec2(uDepthTexel.x, 0.));
@@ -302,20 +333,22 @@ void main(){
     float graze = clamp(abs(dot(N, uCamPos - P)) / far, .25, 1.);
     L = clamp(log2(max(far, 3.) * uCell / (uFocal * uS0 * graze)) - .7 * smoothstep(10., 34., far), -6., 7.);
     unit = uS0;
-    solid = 1.; stray = 1.;
+    solid = 1.; stray = 1.; kind = 0.; like = uLike; melt = 0.; thick = 1.;
   }
   float n = floor(L), f = L - n;
   float cp = uCell * exp2(-f);                                // the smallest cell's short side on the screen, pixels
   here = textureLod(tSrc, vUv, 1. + uLodShift).rgb;
   broadly = textureLod(tSrc, vUv, log2(cp * 6.) + .5 + uLodShift).rgb;
-  vec3 paint = textureLod(tSrc, vUv, uLodShift).rgb;          // the ground the strokes go over: the picture itself, so nothing shows through an edge but its own colour
+  // the ground the strokes go over: the picture itself, so nothing shows through an edge but the thing's own colour
+  // (read a little more softly on sea and sky, where a gap between strokes should not show a ripple sharply)
+  vec3 paint = textureLod(tSrc, vUv, (kind > .5 ? 1.2 : 0.) + uLodShift).rgb;
   float height = .06;
   for (int k = 3; k >= 0; k--) {
     if (k == 0 && f > .5) continue;                           // the smallest size has faded out by here
     float j = n + float(k);
     float along = cls == 3. ? mod(j, 2.) : runs.x;            // on the floor of the well every other size goes the other way
     lay(uvm, unit * exp2(j), along, closes * 4096. / exp2(j), vec2(j * 37.13 + cls * 101.7, j * 11.71 + cls * 53.3),
-        cp * exp2(float(k)), float(k) - f, paint, height);
+        cp * exp2(float(k) - finer), float(k) - f, paint, height);
   }
   gl_FragColor = vec4(paint, height);
 }`;
@@ -364,9 +397,10 @@ void main(){
   vec3 seen = v.xyz / v.w;
   float light = 0.;
   if (along > 0. && miss < 1.) light = (1. - smoothstep(.5, 1., miss)) * step(along - uOrb.w * .5, length(seen)) * smoothstep(.3, .7, lum(sharp));
-  // The sea is not stroked. Its own waves are its brushwork: it keeps the painter's colours and is left as it is.
+  // On the sea only the glitter goes in sharply. Its waves are painted, like everything else: put back sharply they
+  // would show through the strokes as a photograph shows through paint.
   float sea = deep < .99999 && length((uViewInv * vec4(seen, 1.)).xz) > uShore ? 1. : 0.;
-  light = max(light, sea);
+  touch = mix(touch, smoothstep(.86, .98, lum(sharp)) * smoothstep(.02, .1, d), sea);
   touch = max(touch, light);
   // before a stone the visitor has stepped up to, what is cut into it is drawn in with a fine brush, however faint
   vec3 fineLine = sharp - textureLod(tSoft, vUv, uSoftLod).rgb;
