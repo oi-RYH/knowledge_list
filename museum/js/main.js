@@ -154,7 +154,7 @@ async function start() {
   const pipeline = new Pipeline(renderer, scene, camera, {
     sun, sunDir, sunColor: sunRadiance, time,
     // what the brush strokes need to know of the building: where it ends, and the radii its surfaces are laid out by
-    well: { outer: R_WALL + WALL_T + 0.05, mid: (DIM.R_IN + R_WALL) / 2, floor: 10.4 },
+    well: { outer: R_WALL + WALL_T + 0.05, mid: (DIM.R_IN + R_WALL) / 2, floor: 10.4, helix: [well.K, RISE, well.K * well.thetaL] },
   });
   pipeline.air.march.uniforms.uShaft.value.set(R_WALL, 0, height);
   pipeline.setQuality(quality);
@@ -406,7 +406,7 @@ async function start() {
     pipeline.focus.value = focused ? 3.4 : 7.6;
     pipeline.aperture.value = Math.max(state.focus * 2.6, inside * 0.3);
     scene.fog.color.copy(HAZE).lerp(NIGHT, smoothstep(deep, 0.15, 0.8));
-    pipeline.paint.finish.uniforms.uSplit.value = 1 - deep;      // down there the only light is the presence's, and its colour is its speech
+    pipeline.paint.palette = 1 - 0.7 * deep;                     // down there the only light is the presence's, and its colour is its speech
     pipeline.paint.orb.set(being.group.position.x, being.group.position.y, being.group.position.z, being.group.scale.x * 2.5);
     pipeline.paint.finish.uniforms.uRead.value = state.focus;
 

@@ -269,7 +269,7 @@ export class Pipeline {
       uniforms: { tDiffuse: { value: null }, uTime: time, uAmount: { value: 0.035 }, uRes: { value: new THREE.Vector2() } },
       vertexShader: FULLSCREEN_VERT, fragmentShader: GRAIN, depthTest: false, depthWrite: false,
     }));
-    this.paint = new PaintPass(camera, this.sceneTarget.depthTexture, well);
+    this.paint = new PaintPass(camera, this.sceneTarget.depthTexture, { well, sun, sunDir });
     this.paint.enabled = true;
     this.fxaa.enabled = this.grain.enabled = false;
     for (const p of [this.input, this.ao, this.air, this.dof, this.bloom, this.grade, this.paint, this.fxaa, this.grain]) this.composer.addPass(p);

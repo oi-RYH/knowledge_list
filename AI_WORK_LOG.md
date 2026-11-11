@@ -635,3 +635,214 @@ git push origin web
 - `TECH_KNOWLEDGE.md`: Web Graphics
 - `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
 
+## 2026-11-11 / Paint: distinct things, colour, reflected light
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: The painted picture made clear and coloured, against three Sorolla paintings the owner supplied
+
+### Purpose
+
+- The owner compared the page with three Sorollas (children running on the beach, two women walking by the sea, a seated portrait) and found it wanting: in the paintings things are clearly set apart, colour is varied, and light and reflected light are used well, while the page looked like plain impressionism, with soft, unclear edges.
+
+### User Request
+
+- "아쉬운 점은, 소로아의 그림들을 보면 오브젝트들 간에 구분이 명확하고 색감이 다양하면서 반사광과 빛을 잘 써. 근데 우리의 페이지는 단순 인상파와 같이 경계가 흐릿하고, 명확하지 않아." (with three reference paintings)
+
+### Work AI Actually Performed
+
+1. Measured the picture as it was: the sky was nearly grey (199, 199, 205), every shadow on white was beige (about 208, 196, 175), and the sea was pale. Texture alone could not give colour that was not there.
+2. Added a pass before the strokes, the painter's eye, that gives each part of the picture the colour he would have mixed. Where the sun falls is read from the sun's shadow map; which way a surface faces from the depth buffer. Sunlit white stays warm; shadow takes the sky's blue-violet on planes that face up or stand, and the floor's warm glow on planes that face down or stand just above the floor. The sea and sky are given their blues. The ramp is warmed and the wall deepened a little so materials part.
+3. Made every stroke belong to one thing: a stroke whose middle is hidden behind another thing, or lies past this thing's edge, is not laid there, and the ground under the strokes is the picture itself, so nothing shows through an edge but the thing's own colour. The strokes are then brought up to the screen's size from the right side of each edge.
+4. Removed the smallest strokes (folds were being stippled), narrowed the range over which a stroke gives way, and lowered the relief, which was reading as blur.
+5. Laid sea and sky out without the seams their cube faces had, which showed as a false corner in the sky once the head could turn up.
+6. Checked in the browser: the entry, across the shaft, a sheet in sun at close range, the sun-side wall seen against the light, a stone stepped up to, below the sea, the floor of the well, a phone-sized portrait window. Measured: standing still the picture changes no more than the camera's; walking about 2.2 times as much and looking round 1.4 times; frame time about 10.8 ms against 15.5 ms at 1935 x 1474 on this Mac.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| The sun's shadow map, read in a screen pass | Sun and shade decided exactly, not guessed from brightness | `paint.js`, `EYE` |
+| Normals rebuilt from depth | Which way a surface faces decides which reflected light it takes | `paint.js`, `EYE` |
+| Depth test at each stroke's middle; depth-aware upsampling | Strokes kept to one thing; outlines at full resolution | `paint.js`, `STROKES` and `FINISH` |
+| Mercator layout by direction | Sea and sky strokes with one continuous layout and no pole or seam in view | `paint.js`, `STROKES` |
+
+### Commands Run
+
+```text
+node --check museum/js/*.js
+python3 museum/tools/serve.py 4173        # already running
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| Shadow fill, cool / warm | (0.90, 0.985, 1.30) / (1.19, 0.955, 0.70), at equal brightness | The sky's colour and the floor's glow that shadow takes |
+| `uLike` | 0.07..0.13 | A stroke gives way over a narrower range: cleaner cuts |
+| `uSay` | 0.07..0.17 | Smaller strokes only at real edges |
+| `PaintPass.relief` | 0.26 | Lower: the relief was softening the picture |
+| `QUALITY.high.paint` | 0.66 | Keeps the frame inside 16.7 ms with the extra pass |
+| `PaintPass.palette` | 1 above the sea, 0.3 at the bottom | The painter's eye stands back where the presence's colour is its speech |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `museum/js/paint.js` | Changed | The painter's eye pass; strokes kept to one thing; clean outlines; sea and sky laid out without seams |
+| `museum/js/post.js`, `museum/js/main.js` | Changed | Hand the pass the sun and the shape of the ramp |
+| `museum/js/config.js` | Changed | Stroke resolution at `high` and `medium` |
+| `museum/README.md`, `DESIGN.md`, `AI_WORK_LOG.md` | Changed | Describe the three steps |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| Colour changed in the paint, not in the scene | The camera's picture (`?paint=0`) and its light stay as computed; the paint leans further the way a painter would | No |
+| The ramp warmed and the wall deepened slightly | White on white cannot be set apart by outline alone | No |
+| The palette stands back below the sea | There the presence's colour carries the verdict | No |
+| Not committed or pushed at the time | The owner had not asked; published later, with the far-sea fix | No |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Shadow map lookup in a screen pass | How a pixel's world position is tested against the sun's depth map | Unreviewed |
+| Depth-aware (bilateral) upsampling | Why a low-resolution layer is taken only from neighbours at a similar depth | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+
+## 2026-11-11 / Paint: the sea left as it is
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: No brush strokes over the sea; reflected light taken from the picture
+
+### Purpose
+
+- The owner saw, at the horizon, the sky's rough strokes laid over the sea's own rendering, and asked for the sea to be left as the sea.
+
+### User Request
+
+- "지금 수평선을 보면, 기존의 바다 표현 위에 하늘의 러프한 터치가 덧씌워졌어. 바다는 바다 표현 그대로 해줄래?"
+
+### Work AI Actually Performed
+
+1. Left the sea unstroked: in the finish it is shown as the picture has it (its waves and glitter), in the painter's colours, with no relief or weave over it. Sky strokes may no longer cross the horizon or take their colour from anything but sky.
+2. While checking, found shadows on the floor painted warm and a shaded corner muddy. The warm reflected light is now given only to planes that face the floor (wherever the picture shows warmth) and to upright planes where the picture is clearly warm; planes that face the sky always take the sky's colour.
+3. Checked the horizon through an arch, the entry, a shaded corner by a sill, and across the shaft, with the full light bake.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| No new technology | A mask from depth and radius, and a rule on the existing palette | `paint.js` |
+
+### Commands Run
+
+```text
+node --check museum/js/paint.js
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| Warmth that counts as reflected light | above 0.10..0.20 on planes facing the floor, 0.17..0.30 on upright ones, never on planes facing the sky | (red minus blue) over brightness, read from the camera's picture |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `museum/js/paint.js` | Changed | The sea is not stroked; sky strokes stay above the horizon; reflected light read from the picture |
+| `museum/README.md`, `DESIGN.md`, `AI_WORK_LOG.md` | Changed | Describe both |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| The sea keeps the painter's colours | The owner objected to the strokes over it, not to its colour | No |
+| Reflected light read from the picture instead of assumed near every floor | Assumed warmth muddied corners where no sunlit floor was near | No |
+| Not committed or pushed at the time | The owner had not asked; published later, with the far-sea fix | No |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| None new | | |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+
+## 2026-11-11 / The far sea stops flickering
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: Waves smaller than a pixel are no longer drawn or amplified
+
+### Purpose
+
+- The owner saw the dark blue part of the sea near the horizon crackling from frame to frame.
+
+### User Request
+
+- "근데 수평선 근처의 짙은 남색 부분이 너무 지직거려."
+- "올려줘" (in answer to whether to publish the picture as it now is)
+
+### Work AI Actually Performed
+
+1. Measured it standing still: in the band just under the horizon the painted picture changed 0.26 levels a frame against the camera's 0.09, and 0.51 against 0.17 a little lower.
+2. Found two causes. The sea's shader drew ripples and short swells at every distance, so far out they were smaller than a pixel and only noise; and the painter's eye, in giving the sea its deep colour, multiplied that noise about two and a half times.
+3. In `skysea.js`, a swell or ripple shorter than a couple of pixels is now left out (by how much water a pixel covers). In `paint.js`, the sea is read as the average of a few pixels, and beyond a few hundred metres is laid in calm, with a few long level streaks.
+4. Measured again in the same bands: 0.01 just under the horizon and 0.12 lower down (the camera's own picture: 0.06 and 0.07). Nearer the tower, where the waves really move, it is 0.42 against 0.28.
+5. On the owner's request, committed this and the two changes before it (distinct things, colour and reflected light; the sea left unstroked) to `web` and pushed them.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| Band-limiting by pixel footprint (`fwidth`) | Detail finer than a pixel cannot be drawn steadily; leaving it out is the cure, not blurring afterwards | `skysea.js`, the sea's fragment shader |
+
+### Commands Run
+
+```text
+node --check museum/js/skysea.js museum/js/paint.js
+git add -A && git commit                  # on web, after the owner asked
+git push origin web
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| A swell is left out when | the water under one pixel times the swell's frequency passes 1 .. 2.6 | Roughly when its wavelength falls under two or three pixels |
+| The sea is laid in calm | from 50 m, fully by 380 m | Beyond that its waves are below a pixel from the ramp's height |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `museum/js/skysea.js` | Changed | Waves smaller than a pixel are not drawn |
+| `museum/js/paint.js` | Changed | The far sea is averaged and laid in calm |
+| `museum/README.md`, `DESIGN.md`, `AI_WORK_LOG.md` | Changed | Describe it |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| Fixed in the sea's own shader as well as in the paint | The noise was in the camera's picture first; the paint only made it show | No |
+| Committed and pushed to `web` only after the owner asked | Publishing is the owner's call | Yes ("올려줘") |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Aliasing of procedural detail | Why detail smaller than a pixel flickers, and why it has to be removed before it is drawn | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+

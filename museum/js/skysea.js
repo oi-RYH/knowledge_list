@@ -60,12 +60,13 @@ export function buildSkySea(scene, { sunDir, sunColor, radius, seaY, time }) {
         uniform float uTime; uniform vec3 uSunColor; uniform float uShore;
         varying vec3 vW;
         ${HASH}${NOISE}${SKY}
-        // summed slope of a few swells rolling in towards the wall
-        vec2 slope(vec2 p, float t){
+        // Summed slope of a few swells rolling in towards the wall. fp is how much water one pixel covers (metres):
+        // a swell shorter than a couple of pixels is left out, because drawn it could only flicker.
+        vec2 slope(vec2 p, float t, float fp){
           vec2 g = vec2(0.); float a = .07, f = .32; vec2 dir = normalize(vec2(-1., .22));
           for (int i = 0; i < 6; i++) {
             float ph = dot(p, dir) * f + t * sqrt(9.8 * f) * .55 + float(i) * 1.7;
-            g += dir * a * f * cos(ph);
+            g += dir * a * f * cos(ph) * (1. - smoothstep(1., 2.6, fp * f));
             a *= .62; f *= 1.87;
             dir = normalize(dir + vec2(.37 * sin(float(i) * 2.1), .45 * cos(float(i) * 1.3)));
           }
@@ -78,8 +79,10 @@ export function buildSkySea(scene, { sunDir, sunColor, radius, seaY, time }) {
           float dist = length(toCam);
           vec3 V = toCam / dist;
           float calm = 1. / (1. + dist * .012);
-          vec2 g = slope(vW.xz, uTime) * calm;
-          vec2 rip = (vec2(vnoise(vW.xz * 2.6 + uTime * .55), vnoise(vW.xz * 2.6 + 7. - uTime * .47)) - .5) * .34 * calm;
+          vec2 fw = fwidth(vW.xz);
+          float fp = max(fw.x, fw.y);                  // metres of water under one pixel
+          vec2 g = slope(vW.xz, uTime, fp) * calm;
+          vec2 rip = (vec2(vnoise(vW.xz * 2.6 + uTime * .55), vnoise(vW.xz * 2.6 + 7. - uTime * .47)) - .5) * .34 * calm * (1. - smoothstep(.12, .4, fp));
           vec3 N = normalize(vec3(-(g.x + rip.x), 1., -(g.y + rip.y)));
           float F = .02 + .98 * pow(1. - max(dot(N, V), 0.), 5.);
           vec3 R = reflect(-V, N); R.y = abs(R.y) + .001;

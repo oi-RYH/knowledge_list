@@ -77,16 +77,17 @@ Slow, weighted, and caused by something: the visitor walking, wind in cloth, the
 
 ## Paint
 
-The picture is oil paint, after the way Sorolla handled it. Everything under Light is still computed first, as a camera would see it; that picture is then laid down again in brush strokes. (`?paint=0`, or P while looking, shows the camera's picture instead.)
+The picture is oil paint, after the way Sorolla handled it. Everything under Light is still computed first, as a camera would see it; that picture is then looked at again with a painter's eye and laid down in brush strokes. (`?paint=0`, or P while looking, shows the camera's picture instead.)
 
-- A stroke is one load of colour: the picture's colour where the stroke's middle falls, taken as broadly as the stroke is wide. It stops where the picture stops looking like that colour, so the edge of a patch of sun stays an edge.
-- Broad strokes everywhere; smaller ones only where the picture has something that small to show. A plain wall is a few sweeps, the fold of a sheet many dabs.
-- Strokes belong to surfaces, not to the screen. They follow what they are on: upright on what stands or hangs (wall, columns, stones, linen), round with the ramp, level on sea and sky. They stay put as the visitor walks, and grow as the visitor steps up to them, as on a canvas.
-- No two loads of the brush are the same mixture: each strays a little warm or cool while keeping its value.
-- White is warm where the sun is on it and the colour of the sky in shadow. Below the sea this is left alone, because there the only light is the presence's and its colour is its speech.
-- The surface is a painted canvas: light from the upper left rakes the bristle marks, and the weave shows where the paint is thin. There is no border, edge or frame.
-- The last touches go in sharply: glitter on the water, the rail, a letter's edge. Before a stone the visitor has stepped up to, what is cut into it is drawn in with a fine brush, so the name can be read.
-- The presence is not painted. It is light, and where its light shows the picture is left as the camera made it.
+What makes a Sorolla a Sorolla, and not a soft impression, is held to here:
+
+- **Things are distinct.** A stroke belongs to one thing. It never takes its colour from another thing and never runs over an outline, so a white sheet stands clear of the white wall behind it. Outlines fall exactly where the things end.
+- **Shadow has colour.** Sunlit white is warm. Its shadow is not grey: planes that face the sky take the sky's blue-violet, planes that face the floor take the warm light the sunlit floor throws back, and planes that stand take the sky's colour unless the light on them is already clearly warm. Where the sun falls is taken from the sun's own shadow, not guessed from brightness.
+- **Colour is varied.** The sea is deep: violet-blue far out, turquoise close in, its foam and glitter left white. It is not stroked: its own waves are its brushwork, and no stroke of sky dips below the horizon. Far out, where a wave is smaller than a pixel, it is laid in calm, a band of colour with a few long level streaks; a wave too small to draw is not drawn, because it could only flicker. The sky is blue. The ramp is a warm stone and the wall plaster a shade deeper than linen, so materials part from one another. No two loads of the brush are the same mixture.
+- **Strokes are few and broad.** Broad ones everywhere; smaller ones only where the picture has something that small to show, and none smaller than a small brush: folds are drawn, not stippled. They follow what they are on: upright on what stands or hangs, round with the ramp, level across the sky. They belong to the surfaces, stay put as the visitor walks, and grow as the visitor steps up to them.
+- **The surface is a canvas.** Light from the upper left rakes the bristle marks, and the weave shows where the paint is thin. There is no border, edge or frame.
+- **The last touches go in sharply:** glitter on the water, the rail, a letter's edge. Before a stone the visitor has stepped up to, what is cut into it is drawn in with a fine brush, so the name can be read.
+- **The presence is not painted.** It is light. Below the sea, where it is the only light and its colour is its speech, the painter's eye stands back.
 
 ## Interface
 
