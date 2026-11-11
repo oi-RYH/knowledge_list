@@ -29,7 +29,7 @@ body {
 }
 ::selection { background: rgba(240, 207, 142, .55); color: var(--ink); }
 
-#view { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+#view { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; cursor: grab; user-select: none; -webkit-user-select: none; }
 
 /* the light the visitor's eyes adjust from while the well is being prepared */
 #light {

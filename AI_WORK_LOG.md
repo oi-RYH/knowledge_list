@@ -552,3 +552,86 @@ git push origin web
 
 - `TECH_KNOWLEDGE.md`: Web Graphics
 - `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+
+## 2026-11-11 / Looking round freely
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: The head is freed: drag to look all the way round
+
+### Purpose
+
+- The owner found that the view could not be turned freely and asked whether that was intended. It was (the gaze followed the mouse within about 50 degrees to either side and 30 up and down). The owner asked for it to be changed.
+
+### User Request
+
+- "지금 화면 전환이 자유롭지 않은데, 의도된거야?"
+- "바꿔줘" (in answer to whether dragging should look round freely in every direction)
+- "올려줘" (in answer to whether to publish it at the live address)
+
+### Work AI Actually Performed
+
+1. Replaced the gaze that followed the mouse's position with one the visitor drags: the scene is taken hold of and pulled, by exactly the angle the pointer moves through, all the way round and up to 81 degrees up or down.
+2. Let a drag that is released while moving carry on and come to rest, stopped at once by taking hold again; a pull past the limit gives a little and springs back.
+3. Kept the feet on the rail. Walking, flying to a stele and the dots are unchanged.
+4. Touch: one finger either walks (up or down) or turns (sideways), whichever way it sets off, and the turn now stays where it is left; two fingers turn the head every way.
+5. Keys: left and right arrows (and A, D) turn the head 30 degrees.
+6. Stepping up to a stele still faces it squarely, and the head can turn from there. Arriving on the floor of the well draws the gaze to the presence once.
+7. Checked in the browser with real and synthesised pointer input: a drag turns by exactly the angle under the pointer; a drag held still before release stays put; one released while moving glides and rests; a glide is caught by pressing again; a pull past the limit returns to it; a click and a tap are still a click and a tap; the keys, one-finger and two-finger touch, turning while before a stele and stepping back, and the gaze on arrival all behave as described.
+8. On the owner's request, committed the change to `web` and pushed it.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| Pointer Events with pointer capture | One code path for mouse and touch, and a drag that continues outside the picture | `controls.js`, `_listen` |
+| Momentum with exponential decay; resistance past a limit | A gesture follows the hand while held and physics after release | `controls.js`, `update` |
+
+### Commands Run
+
+```text
+node --check museum/js/controls.js
+python3 museum/tools/serve.py 4173        # already running
+git add -A && git commit                  # on web, after the owner asked
+git push origin web
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| `PITCH` | 1.42 rad (81 degrees) | How far up or down the head tilts; straight up would let the view flip |
+| `SLACK`, `GIVE` | 0.6 rad, 0.18 | How far a drag may pull past the limit and how much of that shows |
+| Glide after release | decays at 6.5 per second, at most 4 rad/s | A slow release adds a few degrees; the hardest fling about 35 |
+| Touch gain | 1.5 | A thumb has less room than a mouse |
+| `STEP` | 30 degrees | One press of an arrow key |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `museum/js/controls.js` | Changed | Drag to look, momentum, limits, keys, touch |
+| `museum/museum.css` | Changed | The picture shows a grab cursor and cannot be text-selected |
+| `museum/README.md`, `DESIGN.md`, `AI_WORK_LOG.md` | Changed | Describe looking round |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| Dragging pulls the scene (drag right, see what is to the left) | It is how street-level and panorama viewers work, and it keeps what was under the pointer under it | No |
+| The gaze no longer follows the mouse when nothing is pressed | Two ways of turning at once made aiming at a far stele harder | No |
+| The feet stay on the rail | Walking anywhere needs collisions with wall, columns and stones; the owner was offered that separately | Yes (the offer said the path stays) |
+| The gaze is drawn to the presence once on arrival | The question should not appear behind the visitor's back | No |
+| Committed and pushed to `web` only after the owner asked | Publishing is the owner's call | Yes ("올려줘") |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Tracking and release in a gesture | Why the view must follow the pointer exactly while held, and why momentum belongs only after release | Unreviewed |
+| Pointer capture | What `setPointerCapture` does and why a drag needs it | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+

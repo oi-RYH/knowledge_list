@@ -65,7 +65,8 @@ Understanding is told by material, never by a badge or a word.
 
 Slow, weighted, and caused by something: the visitor walking, wind in cloth, the presence turning.
 
-- Walking eases towards where the scroll points, down and round.
+- Walking eases towards where the scroll points, down and round. The feet keep to the ramp.
+- The head is the visitor's. A drag takes hold of the scene and pulls it, exactly as far as the pointer moves, all the way round and nearly straight up and down; let go while moving, it carries on a little and comes to rest, and taking hold again stops it. Pulled past straight up or down it gives slightly and springs back. Stepping up to a stone faces it squarely, and arriving on the floor of the well draws the gaze to the presence once; after either, the head is free again.
 - Any stele in sight can be chosen. A near one is walked to along the ramp. A far one is flown to: the camera leaves the ramp between two columns, crosses the shaft keeping its distance from the presence, and comes in between two columns on the other side. Long jumps from the dots travel the same way.
 - The unveiling is the signature: the sheet is drawn back over the top of the stone, falls behind it and is gone, in a little over two seconds. It is laid back when the visitor steps away.
 - Veils stir slightly at rest and more under the pointer, wherever in the well they are.
