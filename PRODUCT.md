@@ -48,7 +48,7 @@ The exhibits are the owner's own knowledge records, read from the repository at 
 - Light used the way Joaquín Sorolla painted it.
 - The quiz is a judgement delivered by a non-human, sacred, higher-dimensional presence.
 - Real-time 3D that the visitor moves through. Flat, non-interactive renditions were rejected.
-- Photoreal rendering quality.
+- The picture is oil paint with the texture of applied paint, like an actual Sorolla. The owner first asked for photoreal quality and, once that was built and published, asked for this; it was adopted on 2026-11-11 after a trial. The scene is still lit and rendered physically underneath, and that picture can be shown (`?paint=0`).
 
 ## Evidence on Hand
 

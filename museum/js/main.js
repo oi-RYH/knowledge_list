@@ -151,13 +151,25 @@ async function start() {
   being.light.distance = 44;
   being.light.shadow.camera.far = 40;
 
-  const pipeline = new Pipeline(renderer, scene, camera, { sun, sunDir, sunColor: sunRadiance, time });
+  const pipeline = new Pipeline(renderer, scene, camera, {
+    sun, sunDir, sunColor: sunRadiance, time,
+    // what the brush strokes need to know of the building: where it ends, and the radii its surfaces are laid out by
+    well: { outer: R_WALL + WALL_T + 0.05, mid: (DIM.R_IN + R_WALL) / 2, floor: 10.4 },
+  });
   pipeline.air.march.uniforms.uShaft.value.set(R_WALL, 0, height);
   pipeline.setQuality(quality);
 
   // `?off=ao,air,bloom,fxaa,grain,mirror` switches parts of the picture off, for debugging
   const off = new Set((query.get('off') || '').split(',').filter(Boolean));
   for (const name of ['ao', 'air', 'bloom', 'fxaa', 'grain']) if (off.has(name)) { pipeline[name].off = true; pipeline[name].enabled = false; }
+  // The picture is laid down in brush strokes (paint.js). `?paint=0` leaves it as the camera made it; P switches while looking.
+  let painted = query.get('paint') !== '0';
+  pipeline.setPaint(painted);
+  addEventListener('keydown', (e) => {
+    if (e.code !== 'KeyP' || e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+    painted = !painted;
+    pipeline.setPaint(painted);
+  });
 
   const walk = new Walk({ camera, layout: well, element: canvas, reduced });
   const sound = new Sound();
@@ -341,7 +353,7 @@ async function start() {
   // ---------------------------------------------------------------- loop
   let opened = 0, frameNo = 0, shadowY = Infinity;
   function step() {
-    const dt = Math.min(clock.getDelta(), 0.1);
+    const dt = clamp(clock.getDelta(), 0, 0.1);
     time.value += dt;
     frameNo++;
     const state = walk.update(dt);
@@ -394,6 +406,9 @@ async function start() {
     pipeline.focus.value = focused ? 3.4 : 7.6;
     pipeline.aperture.value = Math.max(state.focus * 2.6, inside * 0.3);
     scene.fog.color.copy(HAZE).lerp(NIGHT, smoothstep(deep, 0.15, 0.8));
+    pipeline.paint.finish.uniforms.uSplit.value = 1 - deep;      // down there the only light is the presence's, and its colour is its speech
+    pipeline.paint.orb.set(being.group.position.x, being.group.position.y, being.group.position.z, being.group.scale.x * 2.5);
+    pipeline.paint.finish.uniforms.uRead.value = state.focus;
 
     // the floor of the well reflects only once the visitor is near enough to see it do so
     const mirrorK = off.has('mirror') ? 0 : 1 - smoothstep(camY, 11, 14);
@@ -408,6 +423,7 @@ async function start() {
   function tick() { step(); requestAnimationFrame(tick); }
 
   progress(1);
+  step();            // one frame before the place is shown, so every shader is compiled behind the loading line and not in the visitor's first second
   await frame();
   document.body.classList.add('ready');
   walk.enabled = true;

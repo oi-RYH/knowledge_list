@@ -15,7 +15,7 @@ Nothing is framed, labelled or hung. The exhibits are stone steles standing on t
 Light is the subject, in the way Joaquín Sorolla used it.
 
 - One low sun (20° above the horizon), warm, on the far side from the entry. It comes in through the arches on its own side, crosses the shaft, and lands on the steles opposite. Its bearing is set a quarter of a bay off the arches so that each arch's light falls on a stele and not between two.
-- Shade is never grey. It is lit by sky from the arches and the open top and by sunlight bounced off the ramp, so shadows lean violet and undersides lean warm. This is computed (light probes that follow the ramp), not painted.
+- Shade is never grey. It is lit by sky from the arches and the open top and by sunlight bounced off the ramp, so shadows lean violet and undersides lean warm. This is computed (light probes that follow the ramp); the paint only leans further the way the light already leans.
 - Sunlit white is allowed to reach white. The tone curve rolls highlights off late so linen in full sun keeps its folds.
 - Air is visible only where the sun crosses it, and it is thin: the shaft is wide, and thicker air would white out the view towards the sun.
 - Below the sea the light is the presence. It throws the columns' shadows outward across the ramp and up the wall; a few last patches of sun still reach the far side of the first turns under the water. Its colour is its speech: gold-white to affirm, violet and dim to deny.
@@ -73,6 +73,19 @@ Slow, weighted, and caused by something: the visitor walking, wind in cloth, the
 - The page opens from white, as eyes do coming in from the sun.
 - Interface elements fade and move a few pixels on an exponential ease-out. Nothing bounces.
 - With reduced motion requested: no head bob, no travel or flight animation, near-instant interface transitions.
+
+## Paint
+
+The picture is oil paint, after the way Sorolla handled it. Everything under Light is still computed first, as a camera would see it; that picture is then laid down again in brush strokes. (`?paint=0`, or P while looking, shows the camera's picture instead.)
+
+- A stroke is one load of colour: the picture's colour where the stroke's middle falls, taken as broadly as the stroke is wide. It stops where the picture stops looking like that colour, so the edge of a patch of sun stays an edge.
+- Broad strokes everywhere; smaller ones only where the picture has something that small to show. A plain wall is a few sweeps, the fold of a sheet many dabs.
+- Strokes belong to surfaces, not to the screen. They follow what they are on: upright on what stands or hangs (wall, columns, stones, linen), round with the ramp, level on sea and sky. They stay put as the visitor walks, and grow as the visitor steps up to them, as on a canvas.
+- No two loads of the brush are the same mixture: each strays a little warm or cool while keeping its value.
+- White is warm where the sun is on it and the colour of the sky in shadow. Below the sea this is left alone, because there the only light is the presence's and its colour is its speech.
+- The surface is a painted canvas: light from the upper left rakes the bristle marks, and the weave shows where the paint is thin. There is no border, edge or frame.
+- The last touches go in sharply: glitter on the water, the rail, a letter's edge. Before a stone the visitor has stepped up to, what is cut into it is drawn in with a fine brush, so the name can be read.
+- The presence is not painted. It is light, and where its light shows the picture is left as the camera made it.
 
 ## Interface
 

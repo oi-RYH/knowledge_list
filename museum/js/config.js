@@ -41,10 +41,11 @@ export const STATUS = ['known', 'familiar', 'unlearned', 'unreviewed'];
 
 export const QUALITY = {
   // dpr: device-pixel-ratio cap, msaa: scene samples, shadow: side of the sun's (square) shadow map,
-  // mirror: fraction of screen, vol: volumetric steps, ao/dof: toggles, clothNear: distance (m) for full-detail veils
-  ultra:  { dpr: 2.0,  msaa: 4, shadow: 4096, mirror: 0.75, vol: 36, ao: true,  dof: true,  clothNear: 18 },
-  high:   { dpr: 1.5,  msaa: 4, shadow: 4096, mirror: 0.5,  vol: 28, ao: true,  dof: true,  clothNear: 12 },
-  medium: { dpr: 1.25, msaa: 0, shadow: 4096, mirror: 0.5,  vol: 18, ao: true,  dof: false, clothNear: 9 },
-  low:    { dpr: 1.0,  msaa: 0, shadow: 2048, mirror: 0.35, vol: 12, ao: false, dof: false, clothNear: 7 },
+  // mirror: fraction of screen, vol: volumetric steps, ao/dof: toggles, clothNear: distance (m) for full-detail veils,
+  // paint: fraction of the picture's size the brush strokes are laid at
+  ultra:  { dpr: 2.0,  msaa: 4, shadow: 4096, mirror: 0.75, vol: 36, ao: true,  dof: true,  clothNear: 18, paint: 0.75 },
+  high:   { dpr: 1.5,  msaa: 4, shadow: 4096, mirror: 0.5,  vol: 28, ao: true,  dof: true,  clothNear: 12, paint: 0.7 },
+  medium: { dpr: 1.25, msaa: 0, shadow: 4096, mirror: 0.5,  vol: 18, ao: true,  dof: false, clothNear: 9,  paint: 0.7 },
+  low:    { dpr: 1.0,  msaa: 0, shadow: 2048, mirror: 0.35, vol: 12, ao: false, dof: false, clothNear: 7,  paint: 1.0 },
 };
 export const QUALITY_ORDER = ['low', 'medium', 'high', 'ultra'];

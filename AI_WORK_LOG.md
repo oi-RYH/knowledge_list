@@ -401,3 +401,154 @@ git push origin web
 - `TECH_KNOWLEDGE.md`: Web Graphics; Development Tools (Git repository)
 - `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
 
+## 2026-11-11 / Paint: a trial of a painted picture
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: The picture laid down in brush strokes, as a trial beside the photographic one
+
+### Purpose
+
+- The owner asked whether the photographic rendering could be given the texture of applied paint, like an actual Sorolla. Build that as a mode that can be switched on and compared, without changing what is published.
+
+### User Request
+
+- "지금은 실사 렌더링이잖아? 이제 실제 소로아의 그림처럼 물감을 칠한 질감이 나도록 할 수 있어?"
+
+### Work AI Actually Performed
+
+1. Wrote `museum/js/paint.js`: a pass after the grade that lays the finished picture down again in strokes, and a second pass that treats the result as a painted canvas (relief of the paint under raking light, weave, sharp last touches).
+2. Laid the strokes out on the surfaces themselves, in the well's coordinates (bearing, height, radius), rebuilt per pixel from the depth buffer, so they stay put as the visitor walks. Each surface carries strokes in every size; the four that come out between a small and a broad brush on the screen are used. Sea and sky are laid out by direction.
+3. Gave every stroke one colour (the picture's at its middle, read from the mip level as coarse as the stroke is wide) and stopped it where the picture stops resembling that colour. Smaller strokes appear only where they differ from what a broad one would lay in.
+4. Added a painter's palette for white things (warm in sun, sky-coloured in shadow, faded out below the sea), left the presence unpainted where its light shows, and drew a stepped-up-to stone's lettering back in so the name can be read.
+5. Wired it into `post.js` (`Pipeline.setPaint`), `config.js` (`QUALITY.*.paint`) and `main.js` (`?paint`, the P key).
+6. Checked in the browser: entry, across the shaft, a stone with its sheet on and one stepped up to, below the sea, the floor with a question up, a phone-sized portrait window. Measured against the photographic picture at the same places: mean brightness within about 1% above the sea and 3% below it; frame-to-frame change standing still the same; walking 1.2 to 2.3 times as much and looking round 1.0 to 1.45 times as much (the stroke texture moves with the surfaces); frame time about 10.5 ms against 15.3 ms at 1935 x 1474 on this Mac.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| Stroke-based painterly rendering as a screen pass (gathered strokes, after Hertzmann's layered brush sizes) | Real strokes with direction, overlap and bristle marks, not a blur filter | `paint.js`, `STROKES` |
+| World-anchored stroke layout with a size chosen by distance (as in dynamic solid textures) | Strokes fixed to the screen slide over the scene when the camera moves | `paint.js`, the layout in `main()` |
+| Mip chain of the finished picture | A stroke's colour is the picture averaged over the stroke's width, in one fetch | `PaintPass.source` |
+| Height field of the paint and a raking light | Impasto and bristle grooves | `paint.js`, `FINISH` |
+
+### Commands Run
+
+```text
+node --check museum/js/*.js
+node museum/tools/check-data.mjs
+python3 museum/tools/serve.py 4173        # already running; http://localhost:4173/?paint
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| `PaintPass.stroke` | 0.0075 of the picture's height | Short side of the smallest stroke's cell; the broadest are eight times that |
+| `QUALITY.*.paint` | 0.7 (ultra 0.75, low 1.0) | The strokes are laid at this fraction of the picture's size; the finish is at full size |
+| `uLike` / `uSay` | 0.055..0.15 / 0.045..0.13 | How unlike the picture a stroke may be before it gives way; how much a smaller stroke must add to be there |
+| `PaintPass.relief`, `canvas` | 0.36, 0.05 | Strength of the raking light and of the weave; both ease off on small or coarse pictures |
+| `?paint`, key P | off by default | The published site is unchanged until the owner adopts the look |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `museum/js/paint.js` | Created | The paint pass |
+| `museum/js/post.js` | Changed | Adds the pass after the grade; `setPaint` switches it with the lens effects it replaces |
+| `museum/js/config.js` | Changed | `paint` in each quality tier |
+| `museum/js/main.js` | Changed | `?paint`, the P key, the per-frame inputs (presence, depth of the visitor, reading a stone) |
+| `museum/README.md`, `DESIGN.md`, `AI_WORK_LOG.md` | Changed | Describe the trial |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| A switchable trial, off by default | The photographic picture was what the owner had approved and published an hour earlier | No |
+| Strokes anchored to surfaces instead of to the screen | The site is walked through; screen-anchored strokes would crawl | No |
+| The presence left unpainted | Painted, its lattice became a white ball and lost what makes it a presence | No |
+| Sky-coloured shadows on white | Texture alone left the picture beige; this is the colour Sorolla's whites have | No |
+| Lettering drawn back in before a focused stone | Faint inscriptions were lost in the brushwork, and the names are the content | No |
+| Not committed or pushed at the time | The owner had asked to publish the well, not this; it was published later, with its adoption | No |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| World-anchored strokes | Why strokes fixed to the screen slide over a moving scene, and how laying them out on surfaces avoids it | Unreviewed |
+| Mip chain as a blur | Why reading a coarser mip level gives the average colour under a stroke | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+
+## 2026-11-11 / Paint adopted as the picture
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: The painted picture becomes the default
+
+### Purpose
+
+- The owner looked at the trial and adopted it. Make the painted picture what the site shows, and keep the camera's picture reachable.
+
+### User Request
+
+- "채택" (in answer to whether the painted texture should become the default picture)
+- "올려줘" (in answer to whether to publish the painted picture at the live address)
+
+### Work AI Actually Performed
+
+1. Made the paint the default in `main.js`: `?paint=0` now shows the camera's picture, and P still switches while looking.
+2. Drew one frame before the place is shown, so the paint shader (and every other) is compiled behind the loading line instead of in the visitor's first second.
+3. Rewrote the parts of `museum/README.md`, `DESIGN.md` and `PRODUCT.md` that called the paint a trial. `PRODUCT.md` no longer lists photoreal rendering as a commitment; it records that the owner asked for it first and for paint afterwards.
+4. Checked again in the browser: the plain address opens painted, `?paint=0` opens photographic, P switches both ways, a phone-sized portrait window opens painted.
+5. On the owner's request, committed the paint and its adoption to `web` and pushed it, so GitHub Pages serves the painted picture.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| No new technology | The work was a default and the documents | |
+
+### Commands Run
+
+```text
+node --check museum/js/*.js
+node museum/tools/check-data.mjs
+git add -A && git commit                               # on web, after the owner asked
+git push origin web
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| `?paint=0` | off by default | Shows the picture as the camera made it, with its depth of field, edge smoothing and grain |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `museum/js/main.js` | Changed | Paint on unless `?paint=0`; one frame drawn before the place is shown |
+| `museum/js/post.js` | Changed | The pipeline starts painted |
+| `museum/README.md`, `DESIGN.md`, `PRODUCT.md`, `AI_WORK_LOG.md` | Changed | Describe the paint as the picture |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| Kept the camera's picture behind `?paint=0` and the P key | It costs nothing, and it is what the paint is laid over | No |
+| Drew a frame before showing the place | A large shader compiling in the first visible second would stutter the opening | No |
+| Committed and pushed to `web` only after the owner asked | Publishing is the owner's call | Yes ("올려줘") |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Shader compilation on first use | Why the first frame that uses a shader is slow, and why drawing one frame early hides it | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics

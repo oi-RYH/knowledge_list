@@ -2,6 +2,8 @@
 // depth; everything after that works on the image:
 //   ambient occlusion -> sunlit air (ray-marched through the sun's shadow map) -> depth of field
 //   -> bloom -> exposure, tone curve and grade -> edge antialiasing -> film grain.
+// The site shows it laid down again in paint (paint.js), which takes the place of the last two
+// and of the depth of field; without the paint, those three finish the picture as a camera would.
 
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -12,6 +14,7 @@ import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { FULLSCREEN_VERT } from './glsl.js';
+import { PaintPass } from './paint.js';
 
 const MARCH = /* glsl */ `
 #include <packing>
@@ -226,7 +229,7 @@ void main(){
 }`;
 
 export class Pipeline {
-  constructor(renderer, scene, camera, { sun, sunDir, sunColor, time }) {
+  constructor(renderer, scene, camera, { sun, sunDir, sunColor, time, well }) {
     this.renderer = renderer; this.scene = scene; this.camera = camera;
     this.samples = 4;
     this.sceneTarget = this.#makeSceneTarget(4, 4);
@@ -266,7 +269,10 @@ export class Pipeline {
       uniforms: { tDiffuse: { value: null }, uTime: time, uAmount: { value: 0.035 }, uRes: { value: new THREE.Vector2() } },
       vertexShader: FULLSCREEN_VERT, fragmentShader: GRAIN, depthTest: false, depthWrite: false,
     }));
-    for (const p of [this.input, this.ao, this.air, this.dof, this.bloom, this.grade, this.fxaa, this.grain]) this.composer.addPass(p);
+    this.paint = new PaintPass(camera, this.sceneTarget.depthTexture, well);
+    this.paint.enabled = true;
+    this.fxaa.enabled = this.grain.enabled = false;
+    for (const p of [this.input, this.ao, this.air, this.dof, this.bloom, this.grade, this.paint, this.fxaa, this.grain]) this.composer.addPass(p);
     this.air.march.uniforms.tDepth.value = this.sceneTarget.depthTexture;
     this.air.composite.uniforms.tDepth.value = this.sceneTarget.depthTexture;
   }
@@ -301,11 +307,20 @@ export class Pipeline {
       this.dof.material.uniforms.tDepth.value = d;
       this.air.march.uniforms.tDepth.value = d;
       this.air.composite.uniforms.tDepth.value = d;
+      this.paint.setDepth(d);
     }
     this.ao.enabled = q.ao && !this.ao.off;
     this.air.enabled = q.vol > 0 && !this.air.off;
     this.air.setSteps(Math.max(8, q.vol));
     this.dofAllowed = q.dof;
+    this.paint.setScale(q.paint);
+  }
+
+  /** Paint the picture instead of leaving it as the camera made it. Paint has its own grain and no lens to blur with. */
+  setPaint(on) {
+    this.paint.enabled = on;
+    this.fxaa.enabled = !on && !this.fxaa.off;
+    this.grain.enabled = !on && !this.grain.off;
   }
 
   setSize(w, h, dpr) {
@@ -314,6 +329,7 @@ export class Pipeline {
     this.composer.setPixelRatio(dpr);
     this.composer.setSize(w, h);
     this.air.setSize(pw, ph);
+    this.paint.setDensity(dpr);
     this.ao.setSize(Math.round(pw / 2), Math.round(ph / 2));     // occlusion is soft; half resolution is plenty
     this.dof.material.uniforms.uTexel.value.set(1 / pw, 1 / ph);
     this.fxaa.material.uniforms.resolution.value.set(1 / pw, 1 / ph);
@@ -322,7 +338,7 @@ export class Pipeline {
 
   render(dt) {
     const r = this.renderer;
-    this.dof.enabled = this.dofAllowed && this.dof.material.uniforms.uAperture.value > 0.02;
+    this.dof.enabled = this.dofAllowed && !this.paint.enabled && this.dof.material.uniforms.uAperture.value > 0.02;
     r.setRenderTarget(this.sceneTarget);
     r.render(this.scene, this.camera);
     this.composer.render(dt);
