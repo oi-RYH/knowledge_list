@@ -68,6 +68,13 @@ function indexLexicon(map) {
   return out;
 }
 
+/** The long explanation shown beside a record: `what`, then `why` or `steps`, `work`, `point`. Only `what` is required. */
+export function validDetail(d) {
+  if (!d || typeof d.what !== 'string' || !d.what.trim()) return false;
+  for (const k of ['why', 'work', 'point']) if (d[k] != null && typeof d[k] !== 'string') return false;
+  return d.steps == null || (Array.isArray(d.steps) && d.steps.length > 0 && d.steps.every((s) => typeof s === 'string' && s.trim()));
+}
+
 function validQuiz(q) {
   return q && typeof q.q === 'string' && Array.isArray(q.o) && q.o.length >= 2 &&
     Number.isInteger(q.a) && q.a >= 0 && q.a < q.o.length;
@@ -99,6 +106,7 @@ export function buildExhibit(techCategories, workflowCategories, lexicon = {}) {
           name: rec.name.replace(/`/g, ''),
           title: entry?.ko || rec.name.replace(/`/g, ''),
           caption: entry?.note || rec.note,
+          detail: validDetail(entry?.detail) ? entry.detail : null,
           status: rec.status,
           added: rec.added,
           confirmed: rec.confirmed,

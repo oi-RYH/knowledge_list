@@ -9,15 +9,15 @@ import * as THREE from 'three';
 import { DIM } from './config.js';
 
 const { clamp, lerp } = THREE.MathUtils;
-const ease = (t) => t * t * (3 - 2 * t);
+export const ease = (t) => t * t * (3 - 2 * t);
 const TAU = Math.PI * 2;
 const HEAD = 0.38;         // on the ramp the gaze rests this far (radians) off the path, towards the shaft
-const PITCH = 1.42;        // how far up or down the head can tilt (radians): not quite to the zenith
+export const PITCH = 1.42; // how far up or down the head can tilt (radians): not quite to the zenith
 const SLACK = 0.6;         // a drag may pull this much further, against resistance, and springs back
 const GIVE = 0.18;         // how much of that pull shows
 const STEP = Math.PI / 6;  // one press of an arrow key turns the head this far
 // a tilt held inside its limits, giving a little when pulled past them
-const band = (v, lo, hi) => (v < lo ? lo - Math.min(lo - v, SLACK) * GIVE : v > hi ? hi + Math.min(v - hi, SLACK) * GIVE : v);
+export const band = (v, lo, hi) => (v < lo ? lo - Math.min(lo - v, SLACK) * GIVE : v > hi ? hi + Math.min(v - hi, SLACK) * GIVE : v);
 
 export class Walk {
   constructor({ camera, layout, element, reduced = false }) {
@@ -143,10 +143,10 @@ export class Walk {
     this.onInput?.();
   }
 
-  /** Walk, or fly, up to a stele. `slot` comes from the layout. */
+  /** Walk, or fly, up to a stele. `slot` comes from the layout; `far` stands that many times further back (true: a little). */
   focusOn(slot, far = false) {
     const n = this._n.set(Math.sin(slot.yaw), 0, Math.cos(slot.yaw));
-    this._fpos.set(slot.x, slot.y + 1.46, slot.z).addScaledVector(n, far ? 3.6 : 3.2);
+    this._fpos.set(slot.x, slot.y + 1.46, slot.z).addScaledVector(n, 3.2 * (far === true ? 1.125 : far || 1));
     this._m.lookAt(this._fpos, this._at.set(slot.x, slot.y + 1.4, slot.z), this.camera.up);
     this._fquat.setFromRotationMatrix(this._m);
     this._euler.setFromQuaternion(this._fquat);
@@ -243,7 +243,7 @@ export class Walk {
   _listen() {
     const el = this.element;
     addEventListener('wheel', (e) => {
-      if (!this.enabled) return;
+      if (!this.enabled || e.target?.closest?.('#panel')) return;      // over the reading panel the wheel scrolls its text
       e.preventDefault();
       const unit = e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? innerHeight : 1;
       this.walkBy(clamp(e.deltaY * unit, -400, 400) * this.gain);

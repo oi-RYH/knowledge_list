@@ -1,4 +1,5 @@
-/* The interface is almost nothing: a column of dots, one line of caption, the trial's question.
+/* The interface is almost nothing: a column of dots, the two places to choose from, the trial's question,
+   and the panel that explains a record once the visitor has stepped up to it.
    Colours are taken from the well: sunlit plaster and stone ink up in the light, gold on black down in the dark. */
 
 :root {
@@ -34,7 +35,7 @@ body {
 /* the light the visitor's eyes adjust from while the well is being prepared */
 #light {
   position: fixed; inset: 0; pointer-events: none; z-index: 5;
-  background: radial-gradient(120% 90% at 62% 46%, #fffaf0 0%, #f6ecd8 55%, #ecdcc0 100%);
+  background: var(--cover-well);
   transition: opacity 1.6s ease;
 }
 /* how far the well is from ready: a hairline that fills with the real work done */
@@ -54,6 +55,7 @@ body.ready #light { opacity: 0; }
   max-height: 86vh; opacity: 0; transition: opacity 1.2s ease;
 }
 body.ready #rail { opacity: 1; }
+body.reading #rail { opacity: 0; pointer-events: none; transition-duration: .4s; }
 #rail button {
   position: relative; width: 28px; height: 15px; padding: 0; border: 0; background: none; cursor: pointer;
   color: #fff8e8; -webkit-tap-highlight-color: transparent;
@@ -78,35 +80,39 @@ body.ready #rail { opacity: 1; }
 #rail button:focus-visible { outline: none; }
 body.dark #rail button { color: var(--gold); }
 
-/* --- the one line said about a stele ------------------------------------------------------ */
-#caption {
-  position: absolute; left: 50%; bottom: max(7vh, env(safe-area-inset-bottom)); transform: translate(-50%, 10px);
-  width: min(34em, calc(100vw - 48px)); margin: 0; text-align: center; text-wrap: balance;
-  font-size: clamp(15px, 1.05vw + 11px, 19px); line-height: 1.75; font-weight: 600; letter-spacing: -.012em; color: #fffaf0;
-  text-shadow: 0 1px 18px rgba(40, 24, 4, .9), 0 0 3px rgba(40, 24, 4, .7);
-  opacity: 0; pointer-events: none; transition: opacity .5s ease, transform .9s var(--ease);
-}
-#caption::before {
-  content: ''; position: absolute; inset: -5vh -12vw -9vh; z-index: -1; pointer-events: none;
-  background: radial-gradient(50% 60% at 50% 55%, rgba(40, 26, 8, .42) 0%, rgba(40, 26, 8, 0) 100%);
-}
-#caption.on { opacity: 1; transform: translate(-50%, 0); transition-delay: .9s; }
-
-#back, #sound {
+#sound {
   position: absolute; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer;
   color: #fffaf0; -webkit-tap-highlight-color: transparent; transition: opacity .4s ease, transform .5s var(--ease);
+  left: max(14px, env(safe-area-inset-left)); bottom: max(14px, env(safe-area-inset-bottom)); opacity: 0;
 }
-#back svg, #sound svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 1px 5px rgba(40, 24, 4, .8)); }
-#back { right: max(52px, calc(env(safe-area-inset-right) + 40px)); top: max(18px, env(safe-area-inset-top)); opacity: .85; }
-#back[hidden] { display: block; opacity: 0; pointer-events: none; transform: scale(.8); }
-#sound { left: max(14px, env(safe-area-inset-left)); bottom: max(14px, env(safe-area-inset-bottom)); opacity: 0; }
+#sound svg, #themes svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 1px 5px rgba(40, 24, 4, .8)); }
 body.ready #sound { opacity: .6; }
-#sound:hover, #sound:focus-visible, #back:hover, #back:focus-visible { opacity: 1; transform: scale(1.08); }
+#sound:hover, #sound:focus-visible { opacity: 1; transform: scale(1.08); }
 #sound .waves { display: none; }
 #sound[aria-pressed='true'] .waves { display: inline; }
 #sound[aria-pressed='true'] .mute { display: none; }
-#back:focus-visible, #sound:focus-visible, #choices button:focus-visible { outline: 1.5px solid currentColor; outline-offset: 3px; }
-body.dark #back, body.dark #sound { color: var(--gold); }
+#sound:focus-visible, #themes button:focus-visible, #choices button:focus-visible { outline: 1.5px solid currentColor; outline-offset: 3px; }
+body.dark #sound, body.dark #themes { color: var(--gold); }
+
+/* --- the two places: the well of light and the galaxy ------------------------------------- */
+#themes {
+  position: absolute; left: max(10px, env(safe-area-inset-left)); top: max(10px, env(safe-area-inset-top));
+  display: flex; color: #fffaf0; opacity: 0; transition: opacity 1.2s ease;
+}
+body.ready #themes { opacity: 1; }
+#themes button {
+  width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: none; color: inherit; cursor: pointer;
+  opacity: .6; -webkit-tap-highlight-color: transparent; transition: opacity .35s ease, transform .5s var(--ease);
+}
+#themes button[aria-pressed='true'] { opacity: 1; cursor: default; }
+#themes button:not([aria-pressed='true']):hover, #themes button:not([aria-pressed='true']):focus-visible { opacity: 1; transform: scale(1.08); }
+#themes .core { fill: currentColor; stroke: none; }
+#themes span {
+  position: absolute; left: 12px; top: 46px; white-space: nowrap; pointer-events: none;
+  font-size: 14px; font-weight: 600; letter-spacing: -.01em; text-shadow: 0 1px 12px rgba(50, 30, 5, .85), 0 0 2px rgba(50, 30, 5, .6);
+  opacity: 0; transform: translateY(-4px); transition: opacity .25s ease, transform .5s var(--ease);
+}
+#themes button:hover span, #themes button:focus-visible span { opacity: 1; transform: none; }
 
 /* --- the trial ---------------------------------------------------------------------------- */
 #trial {
@@ -166,4 +172,176 @@ body.plain #plain {
 }
 @media (prefers-reduced-motion: reduce) {
   * { transition-duration: .01s !important; animation: none !important; }
+}
+
+/* --- the galaxy: the same interface, opening out of the dark instead of out of the light --- */
+:root { --cover-well: radial-gradient(120% 90% at 62% 46%, #fffaf0 0%, #f6ecd8 55%, #ecdcc0 100%); --cover-galaxy: radial-gradient(120% 90% at 50% 46%, #0d1018 0%, #05060a 60%, #020204 100%); }
+:root[data-theme='galaxy'] { color-scheme: dark; }
+:root[data-theme='galaxy'] body:not(.plain) { background: #05060a; }
+:root[data-theme='galaxy'] #light { background: var(--cover-galaxy); }
+:root[data-theme='galaxy'] #light::after { background: linear-gradient(to right, #f0cf8e calc(var(--load, 0) * 100%), rgba(240, 207, 142, .16) calc(var(--load, 0) * 100%)); }
+/* going from one place to the other, the picture closes into the light, or the dark, of the place it is going to */
+:root[data-leaving] #light { transition-duration: .65s; }
+:root[data-leaving] #light::after { opacity: 0; }
+:root[data-leaving='well'] #light { background: var(--cover-well); }
+:root[data-leaving='galaxy'] #light { background: var(--cover-galaxy); }
+
+/* --- the panel that explains a record ------------------------------------------------------
+   A floating sheet of glass, in the manner of Apple's interfaces: it stands clear of the screen's
+   edges with continuous round corners, and it is thin enough that the picture behind is seen through
+   it, blurred, with its colours. What makes it glass and not a tinted film: a rim that is bright
+   where the light comes from and fades round the edge, a sheen across its upper corner, a faint
+   light gathered inside its lower edge, and a soft shadow that lifts it off the picture. The groups
+   inside it are thinner panes of the same glass. It is clear where the place is light and smoked
+   where the place is dark (the well below the sea, the galaxy). A concept is tinted blue and a
+   process orange, in both. Its text is set in the system face.
+   The script moves it (museum/js/panel.js); nothing here animates its place. */
+#panel {
+  --p-label: #17171a; --p-second: rgba(34, 34, 44, .8); --p-third: rgba(34, 34, 44, .42);
+  --p-sep: rgba(40, 40, 70, .13); --p-fill: rgba(255, 255, 255, .3); --p-fill-2: rgba(255, 255, 255, .56); --p-edge: rgba(255, 255, 255, .62);
+  --p-blue: #0060cc; --p-orange: #a84a00; --p-badge-ink: #fff; --p-button: rgba(255, 255, 255, .6);
+  --p-tint: var(--p-blue); --p-tint-fill: linear-gradient(140deg, rgba(0, 113, 227, .2), rgba(0, 113, 227, .08)); --p-tint-edge: rgba(0, 113, 227, .26);
+  --p-material: linear-gradient(152deg, rgba(255, 255, 255, .6) 0%, rgba(255, 255, 255, .3) 44%, rgba(255, 255, 255, .42) 100%);
+  --p-rim: linear-gradient(140deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, .35) 28%, rgba(255, 255, 255, .1) 58%, rgba(255, 255, 255, .7) 100%);
+  --p-sheen: radial-gradient(110% 52% at 4% 0%, rgba(255, 255, 255, .5) 0%, rgba(255, 255, 255, 0) 62%), radial-gradient(90% 34% at 100% 100%, rgba(255, 255, 255, .26) 0%, rgba(255, 255, 255, 0) 70%);
+  --p-glass: blur(46px) saturate(190%) brightness(1.06);
+  --inset: 12px;
+  position: absolute; z-index: 1; top: var(--inset); right: var(--inset); bottom: var(--inset); width: clamp(372px, 31vw, 452px);
+  border-radius: 30px; overflow: hidden; color: var(--p-label); background: var(--p-material);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Apple SD Gothic Neo', 'Pretendard Variable', Pretendard, 'Noto Sans KR', system-ui, sans-serif;
+  -webkit-backdrop-filter: var(--p-glass); backdrop-filter: var(--p-glass);
+  /* light gathered inside the glass along its edges, and the shadow that lifts it off the picture */
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .8), inset 0 -22px 40px -22px rgba(255, 255, 255, .36), inset 0 0 30px rgba(255, 255, 255, .1),
+    0 34px 80px rgba(24, 32, 80, .3), 0 8px 22px rgba(24, 32, 80, .14);
+  transform: translate3d(120%, 0, 0); visibility: hidden; will-change: transform;
+  transition: color .6s ease, box-shadow .6s ease;
+}
+/* the sheen across the glass lies under the text; the rim lies over everything and takes no touch */
+#panel::after { content: ''; position: absolute; inset: 0; z-index: 0; border-radius: inherit; background: var(--p-sheen); pointer-events: none; }
+#panel::before {
+  content: ''; position: absolute; inset: 0; z-index: 4; border-radius: inherit; padding: 1.2px; background: var(--p-rim); pointer-events: none;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+#panel[data-kind='workflow'] { --p-tint: var(--p-orange); --p-tint-fill: linear-gradient(140deg, rgba(255, 149, 0, .26), rgba(255, 149, 0, .1)); --p-tint-edge: rgba(255, 149, 0, .34); }
+body.dark #panel {
+  --p-label: #f7f7fa; --p-second: rgba(236, 236, 246, .78); --p-third: rgba(236, 236, 246, .4);
+  --p-sep: rgba(255, 255, 255, .12); --p-fill: rgba(255, 255, 255, .075); --p-fill-2: rgba(255, 255, 255, .17); --p-edge: rgba(255, 255, 255, .16);
+  --p-blue: #6cb3ff; --p-orange: #ffb84d; --p-badge-ink: #101016; --p-button: rgba(255, 255, 255, .16);
+  --p-tint-fill: linear-gradient(140deg, rgba(60, 150, 255, .3), rgba(60, 150, 255, .1)); --p-tint-edge: rgba(120, 180, 255, .3);
+  --p-material: linear-gradient(152deg, rgba(86, 92, 124, .34) 0%, rgba(14, 14, 22, .26) 46%, rgba(40, 42, 62, .36) 100%);
+  --p-rim: linear-gradient(140deg, rgba(255, 255, 255, .62) 0%, rgba(255, 255, 255, .14) 28%, rgba(255, 255, 255, .04) 58%, rgba(255, 255, 255, .3) 100%);
+  --p-sheen: radial-gradient(110% 52% at 4% 0%, rgba(190, 205, 255, .2) 0%, rgba(190, 205, 255, 0) 62%), radial-gradient(90% 34% at 100% 100%, rgba(255, 255, 255, .08) 0%, rgba(255, 255, 255, 0) 70%);
+  --p-glass: blur(46px) saturate(185%) brightness(.62);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .3), inset 0 -22px 40px -22px rgba(255, 255, 255, .1), inset 0 0 30px rgba(255, 255, 255, .03), 0 34px 80px rgba(0, 0, 0, .6);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .28);
+}
+body.dark #panel[data-kind='workflow'] { --p-tint-fill: linear-gradient(140deg, rgba(255, 165, 30, .3), rgba(255, 165, 30, .1)); --p-tint-edge: rgba(255, 190, 90, .32); }
+
+.grab { display: none; }
+.panel-scroll {
+  position: absolute; inset: 0; z-index: 1; overflow: hidden auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--p-third) transparent;
+  /* where the text meets the sheet's edge it fades, instead of being cut by a line */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22px, #000 calc(100% - 40px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 22px, #000 calc(100% - 40px), transparent 100%);
+}
+.panel-body {
+  padding: 26px 24px 52px 26px; font-size: 16px; line-height: 1.62; letter-spacing: -.011em; font-weight: 400;
+  transition: opacity .16s ease;
+}
+.panel-body.leaving { opacity: 0; }
+.panel-body.fresh { animation: body-in .32s ease both; }
+@keyframes body-in { from { opacity: 0; } }
+.panel-body p { margin: 0; }
+.panel-body .where { display: flex; align-items: center; gap: 7px; margin-right: 44px; min-height: 22px; font-size: 13px; line-height: 1.4; font-weight: 600; letter-spacing: -.003em; color: var(--p-tint); }
+.panel-body .where svg { flex: none; width: 18px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.panel-body .where .concept { fill: currentColor; stroke: none; }
+#panel[data-kind='tech'] .where .process, #panel[data-kind='workflow'] .where .concept { display: none; }
+/* large text is set tight, body text is left open */
+.panel-body .name { margin: 10px 0 0; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Apple SD Gothic Neo', 'Pretendard Variable', Pretendard, 'Noto Sans KR', system-ui, sans-serif; font-size: clamp(26px, .9vw + 17px, 32px); line-height: 1.2; font-weight: 700; letter-spacing: -.028em; text-wrap: balance; }
+.panel-body .orig { margin-top: 6px; font-size: 14px; line-height: 1.4; letter-spacing: -.006em; color: var(--p-second); }
+.panel-body .lead { margin-top: 22px; font-size: 19px; line-height: 1.5; font-weight: 600; letter-spacing: -.022em; text-wrap: pretty; }
+.panel-body .more > .what { margin-top: 12px; }
+.panel-body section, .panel-body .kin { margin-top: 28px; }
+.panel-body h3 { margin: 0 0 8px; font-size: 13px; line-height: 1.4; font-weight: 600; letter-spacing: -.003em; color: var(--p-second); }
+/* the steps and the other records of the subject are grouped lists: one rounded ground, rows parted by a hairline that starts at the text */
+.panel-body .steps, .panel-body .kin ul {
+  margin: 0; padding: 0; list-style: none; border-radius: 18px; overflow: hidden;
+  /* a thinner pane of the same glass: a fill, a bright upper edge, a hairline all round */
+  background: var(--p-fill); box-shadow: inset 0 0 0 1px var(--p-edge), inset 0 1px 0 var(--p-fill-2);
+}
+.panel-body .steps { counter-reset: step; }
+.panel-body .steps li { position: relative; display: grid; grid-template-columns: 34px 1fr; padding: 13px 16px 14px 14px; counter-increment: step; font-size: 15.5px; line-height: 1.58; }
+.panel-body .steps li::before {
+  content: counter(step); width: 22px; height: 22px; margin-top: 1px; border-radius: 50%; background: var(--p-tint); color: var(--p-badge-ink); text-shadow: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), inset 0 -3px 5px rgba(0, 0, 0, .14), 0 2px 6px rgba(0, 0, 0, .16);      /* a bead of coloured glass */
+  font-size: 12.5px; line-height: 22px; font-weight: 700; text-align: center; letter-spacing: 0; font-variant-numeric: tabular-nums;
+}
+.panel-body .steps li + li::after, .panel-body .kin li + li::after { content: ''; position: absolute; top: 0; right: 0; height: 1px; background: var(--p-sep); }
+.panel-body .steps li + li::after { left: 48px; }
+/* the one thing to carry away is set on its tint */
+.panel-body .point { padding: 14px 16px 16px; border-radius: 18px; background: var(--p-tint-fill); box-shadow: inset 0 0 0 1px var(--p-tint-edge), inset 0 1px 0 var(--p-fill-2); }
+.panel-body .point h3 { margin-bottom: 4px; color: var(--p-tint); }
+.panel-body .point p { font-weight: 600; letter-spacing: -.016em; }
+.panel-body .meta { margin: 26px 2px 0; font-size: 13px; line-height: 1.5; letter-spacing: -.003em; color: var(--p-second); }
+.panel-body .kin li { position: relative; }
+.panel-body .kin li + li::after { left: 35px; }
+.panel-body .kin button {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 46px; padding: 11px 16px; border: 0; background: none; color: inherit; cursor: pointer;
+  font: inherit; font-size: 16px; line-height: 1.35; letter-spacing: -.014em; text-align: left; -webkit-tap-highlight-color: transparent;
+}
+.panel-body .kin button::before { content: ''; flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--p-blue); }
+.panel-body .kin button[data-kind='workflow']::before { background: var(--p-orange); }
+.panel-body .kin button::after { content: ''; flex: none; width: 7px; height: 7px; margin-left: auto; border: solid var(--p-third); border-width: 2px 2px 0 0; transform: rotate(45deg); }
+/* the row answers the press at once, and lets go slowly */
+.panel-body .kin button:active { background: var(--p-fill-2); }
+@media (hover: hover) and (pointer: fine) { .panel-body .kin button:hover { background: var(--p-fill); } .panel-body .kin button:active { background: var(--p-fill-2); } }
+.panel-body .kin button:focus-visible { outline: 2px solid var(--p-tint); outline-offset: -2px; border-radius: 12px; }
+
+#back {
+  position: absolute; z-index: 2; right: 16px; top: 16px; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 50%;
+  /* a bead of the same glass, with a blur of its own so it stays a button when text passes under it */
+  background: var(--p-button); color: var(--p-second); cursor: pointer; -webkit-tap-highlight-color: transparent;
+  -webkit-backdrop-filter: blur(12px) saturate(160%); backdrop-filter: blur(12px) saturate(160%);
+  box-shadow: inset 0 0 0 1px var(--p-edge), inset 0 1px 0 var(--p-fill-2), 0 2px 8px rgba(0, 0, 0, .12);
+  transition: transform .25s var(--ease), background-color .2s ease;
+}
+#back::before { content: ''; position: absolute; inset: -7px; }      /* 44 px to touch */
+#back svg { display: block; width: 12px; height: 12px; margin: auto; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
+#back:active { transform: scale(.9); transition-duration: .08s; }
+#back:focus-visible { outline: 2px solid var(--p-tint); outline-offset: 3px; }
+
+@media (max-width: 640px) {
+  /* a narrow screen has no side to give: the sheet rises from below and the record stays above it */
+  #panel { --inset: 8px; top: auto; left: var(--inset); width: auto; height: min(60svh, 34rem); border-radius: 30px; transform: translate3d(0, 120%, 0); }
+  body.reading #sound { opacity: 0; pointer-events: none; }
+  /* the sheet is taken by its top */
+  .grab { display: block; position: absolute; z-index: 3; top: 0; left: 0; right: 56px; height: 34px; touch-action: none; cursor: grab; }
+  .grab::after { content: ''; position: absolute; left: calc(50% + 28px); top: 7px; width: 36px; height: 5px; margin-left: -18px; border-radius: 3px; background: var(--p-third); }
+  .panel-body { padding: 34px 20px calc(44px + env(safe-area-inset-bottom)) 22px; }
+  .panel-body .name { font-size: 26px; }
+  .panel-body .lead { margin-top: 18px; font-size: 18px; }
+  .panel-body section, .panel-body .kin { margin-top: 24px; }
+  #back { right: 14px; top: 14px; }
+}
+@media (pointer: coarse) {
+  /* a phone has fewer frames to spare for blurring the picture behind: a smaller blur under a slightly denser glass */
+  #panel {
+    --p-material: linear-gradient(152deg, rgba(255, 255, 255, .7) 0%, rgba(255, 255, 255, .46) 44%, rgba(255, 255, 255, .56) 100%);
+    --p-glass: blur(26px) saturate(180%) brightness(1.06);
+  }
+  body.dark #panel {
+    --p-material: linear-gradient(152deg, rgba(70, 76, 104, .5) 0%, rgba(14, 14, 22, .46) 46%, rgba(34, 36, 54, .54) 100%);
+    --p-glass: blur(26px) saturate(175%) brightness(.6);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  #panel { --p-material: #f5f5f7; --p-glass: none; --p-sheen: none; --p-fill: rgba(120, 120, 128, .12); --p-fill-2: rgba(120, 120, 128, .2); --p-edge: rgba(60, 60, 67, .12); --p-button: #e4e4e9; }
+  body.dark #panel { --p-material: #1c1c1e; --p-fill: rgba(118, 118, 128, .24); --p-fill-2: rgba(118, 118, 128, .36); --p-edge: rgba(235, 235, 245, .12); --p-button: #4a4a50; }
+  #back { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@media (prefers-contrast: more) {
+  #panel { --p-material: #fff; --p-glass: none; --p-sheen: none; --p-rim: #000; --p-second: #3a3a3c; --p-sep: rgba(0, 0, 0, .45); --p-fill: #f2f2f7; --p-edge: rgba(0, 0, 0, .4); --p-button: #e4e4e9; text-shadow: none; }
+  body.dark #panel { --p-material: #000; --p-rim: #fff; --p-second: #d1d1d6; --p-sep: rgba(255, 255, 255, .5); --p-fill: #1c1c1e; --p-edge: rgba(255, 255, 255, .45); --p-button: #3a3a3c; }
+  #back { -webkit-backdrop-filter: none; backdrop-filter: none; }
 }

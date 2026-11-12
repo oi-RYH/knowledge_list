@@ -917,3 +917,534 @@ node --check museum/js/paint.js
 - `TECH_KNOWLEDGE.md`: Web Graphics
 - `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
 
+## 2026-11-11 / The orbit: a trial of a composition in space
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: The same records around a black hole, as a second place beside the well
+
+### Purpose
+
+- The owner asked whether there was yet another composition, said it need not be painted this time, and asked for one on the theme of space.
+
+### User Request
+
+- "다른 구성 컨셉이 또 있을까? 이번엔 그림 화풍으로 만들지 않아도 되고, 우주를 주제로 한 번 제작해봐"
+
+### Work AI Actually Performed
+
+1. Chose one composition and built it as a trial page, `space.html`, leaving the well untouched: a black hole with a glowing disc; the records as tablets of smoked glass on one spiral arm in the disc's plane, newest outermost; the visitor rides just outside the arm, inward, so the tablets pass between the visitor and the hole; the trial is held before the disc, and the hole is the judge.
+2. Drew the hole as a pass over the scene that follows a ray of light backwards through every pixel and bends it as the hole would: the far side of the disc shows over and under the hole, a thin ring of light circles its shadow, and the stars and tablets behind it are displaced. The side of the disc turning towards the eye is brighter.
+3. Wrote each record's name on its tablet in light, and told its understanding by that light: gold, pale white, ember, or unlit until stepped up to.
+4. Reused the well's records, quiz, sound, dots, caption and the head's drag-to-look; added this place's own heading and its flights round the disc.
+5. Checked in the browser: the outer arm, mid-arm, a tablet stepped up to and Escape, a flight to a far tablet, the trial with a right answer (the disc flares), a phone-sized portrait window. Frame time about 5 ms at 1935 x 1474 on this Mac.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| Ray marching with bent light (a Newtonian step with the term that reproduces light's path round a black hole) | The lifted far side of the disc and the displaced stars are what make it read as a black hole | `space/hole.js` |
+| Procedural stars with a minimum size in pixels | No star smaller than a pixel and a half, so none flickers as the head turns | `space/hole.js`, `stars` |
+| Canvas text as an additive light texture | Names written in light | `space/tablets.js` |
+
+### Commands Run
+
+```text
+node --check museum/js/space/*.js museum/js/controls.js
+python3 museum/tools/serve.py 4173        # already running; http://localhost:4173/space.html
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| `SPACE.RS` | 3.2 m | The hole's radius; the disc reaches 13 radii |
+| `SPACE.STRIDE`, `PITCH` | 7.5 m, 10 m | Distance between tablets along the arm; how far the arm moves out per turn |
+| `SPACE.R_TRIAL`, `EYE_TRIAL` | 49 m, 5.2 m | Where the visitor stands for the trial, a little above the disc's plane |
+| `STEPS` | 96 (76 medium, 56 low) | Steps a ray is followed for |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `space.html` | Created | The trial page |
+| `museum/js/space/main.js`, `layout.js`, `hole.js`, `tablets.js` | Created | Entry, the arm and the way, the hole and judge, the tablets |
+| `museum/js/controls.js` | Changed | Exports three of the head's rules so another place can reuse them |
+| `museum/museum.css` | Changed | The page opens out of the dark on `space.html` |
+| `museum/README.md`, `AI_WORK_LOG.md` | Changed | Describe the trial |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| A black hole as the centre and the judge | The owner had named a black hole page as the kind of thing wanted early on, and the judge is to be non-human and higher than human | Theme directed; this choice not |
+| One spiral arm, newest outermost | It keeps what the well has: everything in sight, one way through, growth without redesign | No |
+| A separate page, not replacing the well | The well is what is published; this is to be looked at first | No |
+| Not committed or pushed | The owner has not asked | No |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Gravitational lensing in a shader | How following a ray step by step with an inward pull reproduces light bending round a black hole | Unreviewed |
+| Render-target alpha as a mask | How the scene's empty pixels (alpha 0) let a later pass paint the sky only where there is no tablet | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+
+## 2026-11-11 / The galaxy: the space composition remade without tablets
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: Records as stars in a spiral galaxy
+
+### Purpose
+
+- The first space composition kept the well's stone tablets and set them round a black hole. The owner did not see why tablets, asked for it to be remade to fit space, and said a black hole was not required.
+
+### User Request
+
+- "왜 석판에 꽂혔는지 모르겠어. 석판을 고집하지 말고 우주 컨셉에 맞춰 다시 만들어줘. 그리고 꼭 블랙홀을 넣지 않아도 돼."
+
+### Work AI Actually Performed
+
+1. Removed the tablets and the black hole (`space/tablets.js`, `space/hole.js`) and remade `space.html` as a spiral galaxy.
+2. Made each record a thing a galaxy is made of, and told its understanding by where that thing is in a star's life: an unlit cloud of gas with a spark in it (unreviewed), which kindles while the visitor is before it; a small red star (not learned); a warm steady star (familiar); a great blue-white star with rays (known). Names are written in light under the stars, and only for those near, pointed at or gone up to.
+3. Laid the records along one arm of the galaxy, newest at its outer end; the visitor travels over the arm inward to the core, where the trial is held by the same presence as in the well.
+4. Drew the place: two arms of 110,000 stars with a core, glowing gas along the arms, and a sky of far stars beyond, none drawn smaller than a pixel and a half.
+5. Checked in the browser: the outer arm, mid-arm, a star gone up to (name and caption), the trial at the core with its question, a phone-sized portrait window. Frame time about 5 ms at 1935 x 1474 on this Mac.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| Point sprites with a size floor in pixels | A hundred thousand stars in one draw, none flickering | `space/galaxy.js` |
+| Camera-facing sprites from canvas textures | Stars, rays, clouds and names | `space/stars.js` |
+
+### Commands Run
+
+```text
+rm museum/js/space/hole.js museum/js/space/tablets.js
+node --check museum/js/space/*.js
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| `SPACE.R0`, `K` | 36 m, 0.22 | Where the arm begins and how fast it opens |
+| `SPACE.STRIDE` | 8 m | Distance between records along the arm |
+| `SPACE.EYE` | 8.5 m | The visitor rides above the disc, so the arms are seen laid out |
+| `SPACE.NEAR` | 5.2 m | How close the visitor comes to a star gone up to |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `museum/js/space/galaxy.js`, `stars.js` | Created | The place; the records |
+| `museum/js/space/layout.js`, `main.js` | Rewritten | The arm and the way; entry |
+| `museum/js/space/hole.js`, `tablets.js` | Removed | The first attempt |
+| `space.html`, `museum/README.md`, `AI_WORK_LOG.md` | Changed | Named and described as the galaxy |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| Understanding as a star's life (cloud, red star, warm star, blue giant) | It is the theme's own way of saying "not yet lit" and "burning" | No |
+| The judge is the well's presence, at the core | The judge has been that presence from the start; the owner said the black hole was not needed | Partly |
+| Not committed or pushed | The owner has not asked | No |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Point sprites | How one draw call places a hundred thousand camera-facing dots, and why each needs a least size | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+
+
+## 2026-11-11 / The galaxy: stars gathered by subject
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: Clusters by subject in place of an arm in order of date
+
+### Purpose
+
+- In the galaxy the records lay along the arm in the order they were added. The owner wanted stars of one subject gathered together in the galaxy instead.
+
+### User Request
+
+- "시간 순으로 만드는게 아니라, 은하에서 주제별로 별들이 모여있으면 좋겠어."
+
+### Work AI Actually Performed
+
+1. Rewrote `space/layout.js`: one cluster for each subject, laid along the arm in the record files' own order of subjects. A cluster's size grows with the square root of its count; its stars are spread as seeds in a flower head. The order of date is no longer used.
+2. Gathered a subject that appears in both record files (concepts and processes under the same name) into one cluster: 21 groups became 18 clusters.
+3. Gave each cluster a figure and a name (`space/stars.js`): faint lines from star to nearest star, cool at a concept's end and warm at a process's, and the subject's name in light above it, sized by distance and shown for the three or so clusters ahead.
+4. Added a crowd of small stars round each cluster (`space/galaxy.js`), so a subject is seen from far off as a gathering.
+5. Moved the clusters onto the middle of the arm and the visitor's stop to a place short of each, after the first try (clusters beside the way) left the cluster abreast of the visitor out of the picture. The dots on the right are now subjects. A star is gone up to from the side the visitor comes from.
+6. Turned the view less towards the core on a tall screen, where the cluster ahead stood at the picture's edge.
+7. Checked in the browser: arrival, the largest cluster (10 stars), a mixed cluster, a star gone up to (name and caption), the trial at the core with its question, a phone-sized portrait window. No GL error, no shader that failed to build; 4 to 6 ms a frame at 1935 x 1474 on this Mac.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| Golden-angle (sunflower) spread | Any number of stars fill a round cluster without crowding | `space/layout.js` |
+| Line segments with a colour at each end | One draw for a cluster's figure, tinted by each star's kind | `space/stars.js` |
+
+### Commands Run
+
+```text
+node --check museum/js/space/*.js
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| `SPACE.CLUSTER` | 2.4 m + 1.45 m x sqrt(count) | A cluster's radius |
+| `SPACE.GAP` | 9 m | Clear space between clusters along the arm |
+| `SPACE.ASIDE` | 2.2 m | A cluster's middle stands this far to one side of the arm's middle, alternately |
+| `SPACE.AHEAD` | 10 m | The visitor stops this far before a cluster's edge |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `museum/js/space/layout.js` | Rewritten | Clusters by subject; stops and dots by subject |
+| `museum/js/space/stars.js` | Changed | Figures and subject names |
+| `museum/js/space/galaxy.js` | Changed | The crowd of small stars at each cluster |
+| `museum/js/space/main.js` | Changed | Heading and downward look of the visitor |
+| `museum/README.md`, `AI_WORK_LOG.md` | Changed | Described |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| Same-named subjects of the two record files are one cluster | The owner asked for stars gathered by subject; two clusters of one name would read as a mistake | No |
+| Clusters stay on one arm, in the files' order of subjects | The way to the core stays one journey, and a new subject only lengthens the arm | No |
+| Constellation lines and subject names | A gathering of one to ten stars needs something that says it is one thing | No |
+| Not committed or pushed | The owner has not asked | No |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Golden-angle spread | Why turning each next point by about 137.5 degrees fills a disc evenly | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+
+## 2026-11-11 / The galaxy made fuller
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: Structure, colour and depth for the galaxy the records lie in
+
+### Purpose
+
+- The galaxy was two arms of stars, a core and smooth blobs of gas, with an empty sky above. The owner asked for it to be made richer.
+
+### User Request
+
+- "은하를 좀 더 풍성하게 하자."
+
+### Work AI Actually Performed
+
+1. Rewrote `space/galaxy.js`. The disc now has a barred core, two great arms and two lesser ones between them, stars young and blue on the crests of the arms and old and warm off them, a giant now and then, and a thin halo: 200,000 stars at the high tier (was 110,000).
+2. Gave the gas a grain: each patch takes a different piece of one cloud texture made at load (noise at five scales, joined at its edges), so clouds have wisps instead of being round blobs. Added the unresolved light of the arms and more colours of cloud.
+3. Added dust: dark lanes on the inner edges of the great arms, drawn by taking light from the picture colour by colour (blue most), so what lies behind is dimmed and reddened.
+4. Added the places where stars are born: 58 knots of rose gas, each with a handful of blue young stars. They are kept off the stretch of arm the records lie on.
+5. Added 34 globular clusters round the galaxy, most of them above the disc where the visitor's sky is, each with its glow.
+6. Added the sky's own depth: a neighbouring spiral seen at a slant, two small ragged galaxies, and a deep field of small far galaxies in the sky shader.
+7. Added fine star-dust along the visitor's own stretch of the arm, seen only from near, so the arm underfoot is a carpet of small lights.
+8. Checked in the browser at the high tier: arrival, three places on the arm, looking up and outward, a star gone up to, the core with the trial, and the galaxy from above (a test camera). No GL error, no shader that failed to build. 5 to 6 ms a frame at 1935 x 1474 on this Mac (before: 4 to 6). The low tier ran without error at phone size, but its picture was not captured: the pane's loading cover did not clear in the screenshot.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Reason for Use | Where Applied |
+|---|---|---|
+| Point sprites sampling a tileable cloud texture | Wisps in every cloud for two texture reads, with no noise worked out per pixel | `space/galaxy.js` (`CLOUD_VERT`, `CLOUD_FRAG`, `cloudTexture`) |
+| Custom blending, destination times one minus source colour | Dust that darkens and reddens what is behind it | `space/galaxy.js` (`cloudPoints`, `dark`) |
+| Draw order by `renderOrder` | Sky, far galaxies, stars, gas, dust, then the birth knots and the records, which dust must not dim | `space/galaxy.js` |
+
+### Commands Run
+
+```text
+node --check museum/js/space/galaxy.js
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| `buildGalaxy` `stars` | 200,000 high, 130,000 medium, 70,000 low | Stars of the disc; the fine star-dust is 40% more |
+| `buildGalaxy` `rich` | 1, 0.75, 0.5 | How much of the clouds, dust and knots is drawn |
+| Dust `close`, `far` | 14 to 46 m, 120 to 210 m | Dust fades near the eye (no black hole in the picture) and far off (the far arm stays bright) |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `museum/js/space/galaxy.js` | Rewritten | The galaxy |
+| `museum/js/space/main.js` | Changed | Star count and richness by quality tier |
+| `museum/README.md`, `AI_WORK_LOG.md` | Changed | Described |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| What "richer" means: structure, colour and depth, not more of the same stars | A galaxy looks rich by its dust, its rose knots and what stands round it | No |
+| No twinkling or moving things added | The owner disliked flicker in the sea; richness here is in what is seen while travelling | No |
+| Birth knots kept off the records' stretch of arm | A gathering there should always be a subject | No |
+| Not committed or pushed | The owner has not asked | No |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Blending modes | How additive blending differs from multiplying the picture by one minus a colour, and why draw order matters for the second | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+
+
+## 2026-11-11 / Two places to choose from, long explanations, a panel on the right
+
+- Date (YYYY-MM-DD): 2026-11-11
+- Work title: Theme choice (the well of light / the galaxy), a long explanation for every record, shown in a side panel
+
+### Purpose
+
+- The galaxy was a separate trial page, each record had one Korean sentence shown at the bottom of the screen, and the owner found that too short to explain anything.
+
+### User Request
+
+- "웹에 이제 빛의 우물, 지식의 은하 따로 테마를 선택할 수 있게 하자. 그리고 설명은 이제 길게, 충분히 적어. 다만 이제 화면의 아래에 나오는게 아니라 오른편에서 사이드바가 나와서 설명을 하는걸로 가자. 디자인은 테마와 어울리게, 최대한 퀄리티가 좋게 만들자."
+
+### Work AI Actually Performed
+
+1. Made the two places one page. `index.html` reads the choice in its head (the address `?theme=`, then the last choice kept in the browser, then the well) and `museum/js/boot.js` loads that place's code. Two marks at the top left go from one place to the other: the picture closes into the other place's light or dark, the page is loaded again there. `space.html` now only leads to `?theme=galaxy`.
+2. Wrote a long explanation for all 99 entries of `museum/data/exhibit.ko.json` as a new `detail` field: `what`, `why` (concepts) or `steps` (processes), `work`, `point`. The text was written by five subagents from one brief (two finished examples, rules for voice, and the rule that `work` may state only what the record's Notes state), then merged by a script that checked keys, shape and banned wording. The main agent read 18 of the 99 in full; the rest passed only the mechanical checks.
+3. Replaced the one-line caption with a panel (`museum/js/panel.js`) that comes in from the right when a record is stepped up to. The picture stands aside by half the panel's width through a camera view offset, so the record stays in the middle of what is left and the angle it is seen from does not change. On a screen 640 px wide or less the panel rises from below and the picture stands aside upward.
+4. The panel shows the subject, the name, the English name, the one sentence, the long explanation, when it was recorded and what was confirmed, and the other records of the same subject (pressing one goes to it and only the text changes). Wheel, arrow keys, Page Up/Down and space scroll the text while it is open.
+5. Gave the panel the material of each place: sunlit plaster with a violet shade and the sea's reflection in the upper well, a dark wall with gold below the sea, dark glass in the galaxy with cool light for concepts and warm for processes.
+6. `data.js` carries `detail` through and validates it; `check-data.mjs` reports entries without one; the plain version lists the long text as well.
+7. Checked in the browser pane: both places at desktop size (a concept and a process, scrolled to the end, going to another record of the subject, Escape), the dark part of the well, both places at 375 x 812, the switch from the well to the galaxy and back to the bare address, the old `space.html` address. No GL error; no new console error.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Purpose | Where It Appears in This Project |
+|---|---|---|
+| Camera view offset (`PerspectiveCamera.setViewOffset`) | Moves the picture aside without turning the camera | `museum/js/panel.js` (`shiftView`) |
+| CSS custom properties per place, `backdrop-filter`, SVG noise as a background | The panel's three materials | `museum/museum.css` |
+| `localStorage` and a query parameter | Remembers and carries the chosen place | `index.html`, `museum/js/panel.js` |
+| Dynamic `import()` | Loads only the chosen place's code | `museum/js/boot.js` |
+| Subagents | Wrote the 99 explanations in parallel from one brief | not in the repository |
+
+### Commands Run
+
+```text
+node --check museum/js/panel.js museum/js/boot.js museum/js/main.js museum/js/space/main.js museum/js/data.js museum/js/controls.js
+node museum/tools/check-data.mjs
+node museum/tools/check-data.mjs ~/Documents/90-99_Shared-Etc/AI/knowledge_list
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| Panel width | `clamp(384px, 34vw, 520px)`; a sheet of `min(58svh, 34rem)` at 640 px and below | Room to read without taking the record out of the picture |
+| Stored choice | `localStorage['museum.theme']` = `well` or `galaxy` | The bare address opens the place chosen last |
+| Step-up distance on a tall screen (well) | 1.45 times | The sheet takes the lower part, so the stone is seen from further back |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `index.html` | Changed | Choice of place in the head, the two marks, the panel's skeleton |
+| `space.html` | Changed | Leads to `?theme=galaxy` |
+| `museum/js/boot.js`, `museum/js/panel.js` | Created | Loading the chosen place; the panel, the switch, the plain version |
+| `museum/js/main.js`, `museum/js/space/main.js` | Changed | Use the panel instead of the caption; shift the view |
+| `museum/js/data.js`, `museum/js/controls.js`, `museum/tools/check-data.mjs` | Changed | `detail`; wheel over the panel; step-up distance |
+| `museum/data/exhibit.ko.json` | Changed | `detail` for 99 entries |
+| `museum/museum.css` | Changed | The panel, the two marks, the galaxy chosen on the root element |
+| `museum/README.md`, `AI_WORK_LOG.md` | Changed | Described |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| A switch that is always there, the well by default, the last choice remembered; no chooser screen at entry | The site has almost no text and opens straight into the place | No |
+| One page for both places | The interface is the same; only the place's code differs | No |
+| The picture stands aside instead of being covered | The record stepped up to should stay in view beside its explanation | No |
+| On a narrow screen the panel rises from below | There is no side to give on a phone held upright | No (the owner asked for the right side) |
+| The shape of a long explanation (what, why or steps, in my work, what to remember) and its length (about 400 to 780 characters) | Long enough to explain, the same order in every record | No |
+| Explanations written by subagents, 18 of 99 read in full by the main agent | Parallel writing; the rest checked mechanically only | No |
+| The rule on `main` (AGENTS.md, Museum Entries) was not changed | `main` is the owner's; new entries by agents will have no `detail` until that rule asks for one | No |
+| Not committed or pushed | The owner has not asked | No |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Camera view offset | How cutting the view out of a larger one moves the picture without changing the camera's position or direction | Unreviewed |
+| The 99 long explanations | General explanations come from the model's knowledge and were not checked by the owner; `work` parts were limited to the records' Notes | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+
+
+## 2026-11-12 / The panel restyled in the manner of Apple's interfaces
+
+- Date (YYYY-MM-DD): 2026-11-12
+- Work title: The explaining panel as a floating sheet of system material, moved by a spring
+
+### Purpose
+
+- The panel had a material of its own in each place (plaster, a dark wall, dark glass) and the site's serif face. The owner asked for it in Apple's design style.
+
+### User Request
+
+- "사이드바의 스타일을 애플 디자인 스타일로 바꿔줄래?"
+
+### Work AI Actually Performed
+
+1. Rewrote the panel's styles in `museum/museum.css`: a sheet that stands 12 px clear of the screen's edges with a 28 px corner radius, a translucent material (`backdrop-filter: blur(40px) saturate(180%)`) with a bright rim and a deep shadow, light where the place is light and dark where it is dark. The three place-specific materials were removed.
+2. Set the panel's text in the system face, with size-specific tracking and leading; the rest of the site keeps Hahmlet.
+3. Concepts are tinted blue and processes orange. The steps and the other records of the subject are grouped lists (one rounded ground, hairlines that start at the text, numbered badges, chevrons); the thing to remember sits on its tint; the close button is a small filled circle.
+4. Replaced the eased slide in `museum/js/panel.js` with a critically damped spring advanced exactly each frame (response 0.4 s), which keeps its speed when the panel is sent back mid-way.
+5. On a narrow screen the sheet has a grabber and can be drawn down: it follows the pointer exactly, gives a little past fully open, and on release carries the pointer's speed to closed or back to open.
+6. Added the reduced-transparency and higher-contrast variants; reduced motion still places the panel at once.
+7. Checked in the browser pane: the light panel in the well and the dark one in the galaxy at desktop size (a concept, a process, scrolled to the end), the spring reversed mid-way, the sheet at 375 x 812, and the drag with synthetic pointer events (follow, give past open, return, throw to close). No GL error.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Purpose | Where It Appears in This Project |
+|---|---|---|
+| `backdrop-filter` material | The translucent sheet | `museum/museum.css` |
+| Critically damped spring (closed-form step) | The panel's motion, interruptible and velocity-aware | `museum/js/panel.js` (`update`) |
+| Pointer Events with capture | Drawing the sheet down on a narrow screen | `museum/js/panel.js` (`_grab`) |
+| `prefers-reduced-transparency`, `prefers-contrast` | Solid variants of the material | `museum/museum.css` |
+
+### Commands Run
+
+```text
+node --check museum/js/panel.js
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| Spring | critically damped, response 0.4 s | No overshoot; the panel was not thrown, so it does not bounce |
+| Material | light `rgba(249,249,251,.76)`, dark `rgba(26,26,30,.64)`, blur 40 px | Text stays legible over a changing picture |
+| Touch devices | blur 22 px under a denser material | Fewer frames to spare for the blur |
+| Release rule | closes if `k + v * 0.25 < 0.55` | Where the sheet would come to rest decides, not where it was let go |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `museum/museum.css` | Changed | The panel's styles rewritten |
+| `museum/js/panel.js` | Changed | Spring, travel in pixels, the grabber |
+| `index.html` | Changed | The grabber element |
+| `museum/README.md`, `AI_WORK_LOG.md` | Changed | Described |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| What "Apple style" covers: a floating translucent sheet, the system face, grouped lists, system blue and orange, a spring, a draggable sheet on a phone | These are what make Apple's panels recognisable | No |
+| The same material in both places, only light or dark | Apple's materials take their look from what is behind them, not from a theme | No |
+| Only the panel changed; dots, marks and the trial keep the site's serif | The request named the sidebar | No |
+| Blur kept on touch devices, smaller | The material is the style; its cost on a real phone was not measured | No |
+| Not committed or pushed | The owner has not asked | No |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Spring animation | Why a spring can be reversed mid-way without a jump, and what critically damped means | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics
+
+
+## 2026-11-12 / More glass in the panel
+
+- Date (YYYY-MM-DD): 2026-11-12
+- Work title: The explaining panel made thinner, clearer glass (glassmorphism)
+
+### Purpose
+
+- The Apple-style panel was a fairly dense material (about three quarters opaque). The owner asked for more glassmorphism.
+
+### User Request
+
+- "글래스 모피즘을 더 적용 해."
+
+### Work AI Actually Performed
+
+1. Made the sheet thinner glass in `museum/museum.css`: the fill went from about 0.76 opaque to a gradient of 0.3 to 0.6 (light) and from 0.64 to 0.26 to 0.36 (dark), with a stronger blur and saturation behind it and a brightness step (up a little under the clear glass, down to 0.62 under the smoked glass) so text keeps its contrast whatever is behind.
+2. Added what makes it read as glass: a gradient rim drawn with a masked pseudo-element (bright at the upper left, faint round the edge, bright again at the lower right), a sheen across the upper corner, light gathered inside the lower edge, and a softer, larger shadow.
+3. Made the groups inside it thinner panes of the same glass (fill, bright upper edge, hairline), the thing to remember a tinted pane, the step numbers and the close button beads of glass; the close button has a small blur of its own.
+4. Kept a denser glass with a smaller blur on touch devices, and solid variants for reduced transparency and higher contrast.
+5. Checked in the browser pane: the clear glass over the sunlit well (a concept), the smoked glass over the galaxy (a process, scrolled to the end), the sheet at 375 x 812. Text was readable in each; no GL error. The grabber and the close button still take the pointer on the sheet.
+
+### Technologies / Tools Used
+
+| Technology or Tool | Purpose | Where It Appears in This Project |
+|---|---|---|
+| `backdrop-filter` with blur, saturate and brightness | The glass and the contrast of text on it | `museum/museum.css` |
+| CSS mask compositing (`exclude` / `xor`) | A gradient rim that follows the round corners | `#panel::before` in `museum/museum.css` |
+
+### Commands Run
+
+```text
+(none besides the browser checks)
+```
+
+### Important Settings / Options
+
+| Setting or Option | Value | Reason and Effect |
+|---|---|---|
+| `--p-glass` | `blur(46px) saturate(190%) brightness(1.06)`; dark `brightness(.62)` | Thin glass that still carries text |
+| Touch devices | `blur(26px)`, fill 0.46 to 0.7 | Fewer frames to spare; cost on a real phone not measured |
+
+### Files Created or Changed
+
+| File Path | Created or Changed | Description |
+|---|---|---|
+| `museum/museum.css` | Changed | The panel's material, rim, sheen, inner panes |
+| `museum/README.md`, `AI_WORK_LOG.md` | Changed | Described |
+
+### Technical Decisions AI Made on the User's Behalf
+
+| Decision | Rationale | Directed by User? |
+|---|---|---|
+| "More" applied to the panel and what is inside it, not to the dots, the two marks or the trial | The panel was what was being discussed | No |
+| How thin the glass is | As thin as kept the text readable over the sea, the plaster and the galaxy's core in the checks | No |
+| Not committed or pushed | The owner has not asked | No |
+
+### Items Requiring a User Knowledge Check
+
+| Item | Question or Explanation Needed | Check Result |
+|---|---|---|
+| Glassmorphism | What `backdrop-filter` does, and why a thin translucent surface needs blur, a rim and a contrast step to stay readable | Unreviewed |
+
+### Related Checklist Items
+
+- `TECH_KNOWLEDGE.md`: Web Graphics
+- `WORKFLOW_KNOWLEDGE.md`: Web UI and Graphics

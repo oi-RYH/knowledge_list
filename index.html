@@ -6,6 +6,16 @@
 <title>빛의 우물</title>
 <meta name="description" content="AI와 함께 일하며 모은 지식을 거닐고, 스스로를 시험하는 곳.">
 <meta name="theme-color" content="#f3e8d2">
+<script>
+  // which place to open: the address first, then the one chosen last time, then the well
+  (function () {
+    var asked = new URLSearchParams(location.search).get('theme'), kept = null;
+    try { kept = localStorage.getItem('museum.theme'); } catch (e) {}
+    var theme = asked === 'galaxy' || asked === 'well' ? asked : kept === 'galaxy' ? 'galaxy' : 'well';
+    document.documentElement.dataset.theme = theme;
+    if (asked === theme) try { localStorage.setItem('museum.theme', theme); } catch (e) {}
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@400;600;700&display=swap" rel="stylesheet">
@@ -24,14 +34,52 @@
 
 <div id="ui">
   <nav id="rail" aria-label="층 이동"></nav>
-  <p id="caption" aria-live="polite"></p>
-  <button id="back" type="button" aria-label="물러서기" hidden>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-  </button>
+  <div id="themes" role="group" aria-label="장소 고르기">
+    <button type="button" data-to="well" aria-label="빛의 우물">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="3.4"/></svg>
+      <span>빛의 우물</span>
+    </button>
+    <button type="button" data-to="galaxy" aria-label="지식의 은하">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 12c0-2.6 2-4.6 4.5-4.6 2.9 0 4.9 2.3 4.9 5.2"/>
+        <path d="M12 12c0 2.6-2 4.6-4.5 4.6-2.9 0-4.9-2.3-4.9-5.2"/>
+        <circle class="core" cx="12" cy="12" r="1.2"/>
+      </svg>
+      <span>지식의 은하</span>
+    </button>
+  </div>
   <section id="trial" aria-live="polite" hidden>
     <h2 id="question"></h2>
     <div id="choices"></div>
   </section>
+  <aside id="panel" aria-label="기록 설명" inert>
+    <div class="grab" aria-hidden="true"></div>
+    <div class="panel-scroll">
+      <article class="panel-body" aria-live="polite">
+        <header>
+          <p class="where">
+            <svg viewBox="0 0 20 12" aria-hidden="true">
+              <circle class="concept" cx="6" cy="6" r="2.6"/>
+              <path class="process" d="M2.5 9.5L8 3l4.5 5 5-5.5"/>
+            </svg>
+            <span></span>
+          </p>
+          <h2 class="name"></h2>
+          <p class="orig" lang="en"></p>
+        </header>
+        <p class="lead"></p>
+        <div class="more"></div>
+        <p class="meta"></p>
+        <nav class="kin" aria-label="같은 주제의 기록">
+          <h3>같은 주제</h3>
+          <ul></ul>
+        </nav>
+      </article>
+    </div>
+    <button id="back" type="button" aria-label="물러서기">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </aside>
   <button id="sound" type="button" aria-label="소리" aria-pressed="false">
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M4 9.5h3.2L12 5.6v12.8l-4.8-3.9H4z"/>
@@ -50,6 +98,6 @@
 </main>
 
 <noscript><p class="notice">이 전시는 자바스크립트가 켜져 있어야 열립니다.</p></noscript>
-<script type="module" src="museum/js/main.js"></script>
+<script type="module" src="museum/js/boot.js"></script>
 </body>
 </html>

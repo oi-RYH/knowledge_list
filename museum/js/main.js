@@ -16,6 +16,7 @@ import { Pipeline } from './post.js';
 import { Walk } from './controls.js';
 import { Trial } from './quiz.js';
 import { Sound } from './audio.js';
+import { Panel, renderPlain, shiftView, themeSwitch } from './panel.js';
 
 const query = new URLSearchParams(location.search);
 const canvas = document.getElementById('view');
@@ -35,25 +36,6 @@ function plainFallback(exhibit, reason) {
   document.body.classList.add('plain', 'ready');
   if (reason) console.warn('[museum] plain version:', reason);
   if (exhibit) renderPlain(exhibit);
-}
-
-/** The whole exhibit as headings and definition lists (for assistive technology and as a fallback). */
-function renderPlain(exhibit) {
-  const root = document.getElementById('plain-list');
-  root.textContent = '';
-  for (const wing of exhibit.wings) {
-    for (const cat of wing.categories) {
-      if (!cat.items.length) continue;
-      const h = document.createElement('h2'); h.textContent = cat.label; root.append(h);
-      const dl = document.createElement('dl');
-      for (const item of cat.items) {
-        const dt = document.createElement('dt'); dt.textContent = item.title; dt.dataset.status = item.status;
-        const dd = document.createElement('dd'); dd.textContent = item.caption;
-        dl.append(dt, dd);
-      }
-      root.append(dl);
-    }
-  }
 }
 
 async function start() {
@@ -279,16 +261,17 @@ async function start() {
     return null;
   }
 
-  const caption = document.getElementById('caption');
-  const back = document.getElementById('back');
   let hovered = null, focused = null;
+  const steleOf = new Map(steles.steles.map((s) => [s.item.id, s]));
+  // what is said about a stele is said beside it: the panel comes in and the picture stands aside for it
+  const panel = new Panel({ exhibit, onPick: (item) => { const s = steleOf.get(item.id); if (s) approach(s); }, onClose: () => stepBack() });
+  themeSwitch();
   function approach(stele) {
     if (focused === stele) return;
     focused = stele; hovered = null;
-    walk.focusOn(stele.slot, camera.aspect < 1);
-    caption.textContent = stele.item.caption;
-    caption.classList.add('on');
-    back.hidden = false;
+    // on a tall screen the panel takes the lower part, so the stone is looked at from further back
+    walk.focusOn(stele.slot, camera.aspect < 1 ? 1.45 : 1);
+    panel.open(stele.item);
     canvas.style.cursor = '';
     if (stele.cloth) sound.veil();
   }
@@ -296,8 +279,7 @@ async function start() {
     if (!focused) return;
     focused = null;
     walk.release();
-    caption.classList.remove('on');
-    back.hidden = true;
+    panel.close();
   }
   walk.onHover = (x, y) => {
     if (focused) return;
@@ -310,7 +292,6 @@ async function start() {
   };
   walk.onInput = stepBack;
   walk.onEscape = stepBack;
-  back.addEventListener('click', stepBack);
 
   const soundButton = document.getElementById('sound');
   soundButton.addEventListener('click', async () => {
@@ -357,6 +338,8 @@ async function start() {
     time.value += dt;
     frameNo++;
     const state = walk.update(dt);
+    const aside = panel.update(dt);
+    shiftView(camera, aside.x, aside.y);
     const camY = camera.position.y;
     const inside = state.end;                          // 0 on the ramp .. 1 standing before the presence
     // 0 up in the sun .. 1 down where the only light is the presence
@@ -428,7 +411,7 @@ async function start() {
   document.body.classList.add('ready');
   walk.enabled = true;
   if (query.has('s')) walk.s = walk.target = clamp(Number(query.get('s')) || 0, 0, well.sMax);
-  window.museum = { exhibit, well, renderer, scene, camera, pipeline, walk, gi, mirror, shaft, steles, being, trial, sound, stats, time, sun, approach, stepBack, step };
+  window.museum = { exhibit, well, renderer, scene, camera, pipeline, walk, gi, mirror, shaft, steles, being, trial, sound, stats, time, sun, panel, approach, stepBack, step };
   tick();
 }
 

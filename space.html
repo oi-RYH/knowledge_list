@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>지식의 은하</title>
+<!-- The galaxy is one of the two places of index.html now; this address only leads there. -->
+<script>
+  (function () {
+    var q = new URLSearchParams(location.search);
+    q.set('theme', 'galaxy');
+    location.replace('./?' + q.toString());
+  })();
+</script>
+</head>
+<body><p><a href="./?theme=galaxy">지식의 은하</a></p></body>
+</html>

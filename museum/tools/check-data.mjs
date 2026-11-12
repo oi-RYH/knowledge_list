@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildExhibit, keyOf, parseRecords } from '../js/data.js';
+import { buildExhibit, keyOf, parseRecords, validDetail } from '../js/data.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..', '..');
@@ -42,10 +42,13 @@ for (const kind of ['tech', 'workflow']) {
   if (unused.length) console.log(`\n${kind} entries with no matching record (kept for records not pushed yet): ${unused.length}`);
 }
 
-const bad = [];
+const bad = [], brief = [];
 for (const kind of ['tech', 'workflow']) {
   for (const [name, e] of Object.entries(lexicon[kind] || {})) {
     if (!e.ko || !e.note) bad.push(`${kind}: ${name} (needs ko and note)`);
+    if (e.detail != null && !validDetail(e.detail)) bad.push(`${kind}: ${name} (malformed detail)`);
+    else if (e.detail == null) brief.push(`${kind}: ${name}`);
+    else if (kind === 'workflow' && !e.detail.steps) bad.push(`${kind}: ${name} (a process needs detail.steps)`);
     for (const q of e.quiz || []) {
       if (!q.q || !Array.isArray(q.o) || q.o.length < 2 || !Number.isInteger(q.a) || q.a < 0 || q.a >= q.o.length) bad.push(`${kind}: ${name} (malformed quiz)`);
       else if (new Set(q.o).size !== q.o.length) bad.push(`${kind}: ${name} (duplicate choices)`);
@@ -53,6 +56,7 @@ for (const kind of ['tech', 'workflow']) {
   }
 }
 report('Malformed entries:', bad);
+report('No long explanation (the panel shows only the one sentence):', brief);
 
 console.log(problems ? `\n${problems} thing(s) to look at.` : '\nAll records have a Korean entry and a quiz question.');
 process.exit(bad.length ? 1 : 0);
